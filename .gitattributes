@@ -1,0 +1,2 @@
+Assets/Fonts/Fill-Font.asset filter=lfs diff=lfs merge=lfs -text
+Assets/Fonts/PottaOne-Regular[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
