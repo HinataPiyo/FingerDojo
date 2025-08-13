@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// コマンド入力の「指撃」の操作を管理するクラス
 /// </summary>
-public class CommandAttack : MonoBehaviour
+public class CommandAttack : MonoBehaviour, ICommand
 {
     [SerializeField] Button button;
 
@@ -16,7 +16,7 @@ public class CommandAttack : MonoBehaviour
     /// <summary>
     /// ボタンが押された時の処理
     /// </summary>
-    void ButtonOnClick()
+    public void ButtonOnClick()
     {
         // タイミングバーを出現
     }

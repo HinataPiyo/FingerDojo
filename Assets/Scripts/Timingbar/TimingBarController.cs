@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TimingBarController : MonoBehaviour
 {
@@ -23,7 +22,11 @@ public class TimingBarController : MonoBehaviour
     {
         // 初期位置を設定
         currentPositionX = -1f;  // 初期位置を-1（最左端）に設定
-        AdjustPerfectPosition(-0.3f);
+        
+        // 判定位置をランダムに変更するための処理
+        int index = Random.value >= 0.5f ? 1 : -1;
+        float result = Random.value * index;
+        AdjustPerfectPosition(result);
     }
 
     void Update()
