@@ -1,3 +1,4 @@
+using UnityEditor.Rendering.Canvas.ShaderGraph;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,11 +7,16 @@ using UnityEngine.UI;
 /// </summary>
 public class CommandAttack : MonoBehaviour, ICommand
 {
-    [SerializeField] Button button;
+    [SerializeField] TimingBarController timingBarCtrl;
+    [SerializeField] CommandTimingQTE cmd_TimingQTE;
+    Button button;
 
     void Awake()
     {
+        button = GetComponent<Button>();
         button.onClick.AddListener(ButtonOnClick);
+
+        gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -19,7 +25,11 @@ public class CommandAttack : MonoBehaviour, ICommand
     public void ButtonOnClick()
     {
         // タイミングバーを出現
+        timingBarCtrl.gameObject.SetActive(true);
+        cmd_TimingQTE.gameObject.SetActive(true);
+        gameObject.SetActive(false);
     }
+
 
     
 }

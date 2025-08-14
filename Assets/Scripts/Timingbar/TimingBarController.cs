@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 public class TimingBarController : MonoBehaviour
@@ -17,11 +19,30 @@ public class TimingBarController : MonoBehaviour
     float targetPositionX = 0f;     // Perfectの位置 (通常は0に設定)
 
     bool isClick;
+    Coroutine cor_QTE;
+    float dispTimingbarTime = 1f;       // QTE決定後バーの表示時間
+    public void CorDecideTimingQTE(System.Action endAction)
+    {
+        if (cor_QTE != null)
+        {
+            return;
+        }
+
+        StartCoroutine(DecideTimingQTE(endAction));
+    }
 
     void Start()
     {
+        Initialize();
+        gameObject.SetActive(false);    // 非表示
+    }
+
+    void Initialize()
+    {
         // 初期位置を設定
+        isClick = false;
         currentPositionX = -1f;  // 初期位置を-1（最左端）に設定
+        AdjustBarPosition();    // バーの位置を変更
         
         // 判定位置をランダムに変更するための処理
         int index = Random.value >= 0.5f ? 1 : -1;
@@ -29,15 +50,16 @@ public class TimingBarController : MonoBehaviour
         AdjustPerfectPosition(result);
     }
 
+    /// <summary>
+    /// Activeになった瞬間に毎回呼ばれる初期化処理
+    /// </summary>
+    void OnEnable()
+    {
+        Initialize();       // 初期化
+    }
+
     void Update()
     {
-        
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            isClick = true;
-            CheckTiming();
-        }
-
         if (isClick) return;
 
         // タイミングバーの位置を-1~1の範囲で移動
@@ -47,15 +69,32 @@ public class TimingBarController : MonoBehaviour
         if (currentPositionX > 1f) currentPositionX = -1f;
         if (currentPositionX < -1f) currentPositionX = 1f;
 
-        // タイミングバーの位置を背景の幅にスケーリングして設定
-        // `currentPositionX` を -1 ~ 1 の範囲から、背景の幅に合わせた位置に変換
-        float barPositionX = Mathf.Lerp(-background.sizeDelta.x / 2, background.sizeDelta.x / 2, (currentPositionX + 1) / 2);
-        timingBar.anchoredPosition = new Vector2(barPositionX, timingBar.anchoredPosition.y);
+        AdjustBarPosition();    // バーの位置を変更
 
         // 判定領域の幅を調整
         AdjustAreaWidth(perfectArea, perfectRange);
         AdjustAreaWidth(greatArea, greatRange);
         AdjustAreaWidth(goodArea, goodRange);
+    }
+
+    /// <summary>
+    /// QTEを決定したときの処理
+    /// </summary>
+    IEnumerator DecideTimingQTE(System.Action endAction)
+    {
+        isClick = true;
+        CheckTiming();
+
+        float elapsed = dispTimingbarTime;
+        while (elapsed > 0)
+        {
+            elapsed -= Time.deltaTime;
+            yield return null;
+        }
+
+        endAction?.Invoke();
+        gameObject.SetActive(false);        // 非表示
+        cor_QTE = null;
     }
 
     /// <summary>
@@ -83,6 +122,16 @@ public class TimingBarController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// バーの位置を動的に変更
+    /// </summary>
+    void AdjustBarPosition()
+    {
+        // タイミングバーの位置を背景の幅にスケーリングして設定
+        // `currentPositionX` を -1 ~ 1 の範囲から、背景の幅に合わせた位置に変換
+        float barPositionX = Mathf.Lerp(-background.sizeDelta.x / 2, background.sizeDelta.x / 2, (currentPositionX + 1) / 2);
+        timingBar.anchoredPosition = new Vector2(barPositionX, timingBar.anchoredPosition.y);
+    }
 
     /// <summary>
     /// 判定領域の幅を動的に変更
