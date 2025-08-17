@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// 敵の手を管理するクラス
@@ -10,7 +9,6 @@ public class EnemyHand : MonoBehaviour, IDamageble
     [SerializeField] GameObject taleDamageUI;
     [SerializeField] Transform handPos;
     [Header("データ"), SerializeField] EnemyDataSO enemyData;
-    [Header("アニメーション"), SerializeField] Animator handAnim;
 
     [Header("UI")]
     [SerializeField] HealthSlider healthSlider;
@@ -48,15 +46,5 @@ public class EnemyHand : MonoBehaviour, IDamageble
     public void Die()
     {
 
-    }
-
-    public void SetHandAnimation(BattleState state)
-    {
-        switch (state)
-        {
-            case BattleState.Attack:
-                handAnim.SetTrigger("Attack");
-                break;
-        }
     }
 }

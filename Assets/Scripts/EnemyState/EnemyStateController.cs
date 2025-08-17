@@ -5,7 +5,7 @@ using UnityEngine;
 /// </summary>
 public class EnemyStateController : MonoBehaviour
 {
-    [SerializeField] EnemyHand enemyHand;
+    [Header("アニメーション"), SerializeField] Animator handAnim;
     StateAttack state_Attack;
 
     float _stateTime;
@@ -28,7 +28,7 @@ public class EnemyStateController : MonoBehaviour
 
     void LateUpdate()
     {
-        if(_stateTime != 0)
+        if (_stateTime != 0)
         {
             stateEnter = false;
         }
@@ -46,16 +46,15 @@ public class EnemyStateController : MonoBehaviour
 
     void Update()
     {
-        _stateTime = Time.deltaTime;
+        _stateTime += Time.deltaTime;
 
         switch (State)
         {
             case BattleState.BattleIntro:
                 break;
-            case BattleState.Free:
+            case BattleState.Idle:
                 if (stateEnter)
                 {
-                    
                 }
 
                 break;
@@ -63,7 +62,12 @@ public class EnemyStateController : MonoBehaviour
                 if (stateEnter)
                 {
                     // アニメーション
-                    enemyHand.SetHandAnimation(BattleState.Attack);
+                    SetHandAnimation(BattleState.Attack);
+                }
+
+                if (_stateTime > 3f)
+                {
+                    StatChange(BattleState.Attack);
                 }
 
                 break;
@@ -80,6 +84,21 @@ public class EnemyStateController : MonoBehaviour
             case BattleState.GameOver:
                 break;
             default:
+                break;
+        }
+    }
+    
+    /// <summary>
+    /// アニメーションを再生する
+    /// </summary>
+    public void SetHandAnimation(BattleState state)
+    {
+        switch (state)
+        {
+            case BattleState.Idle:
+                break;
+            case BattleState.Attack:
+                handAnim.SetTrigger("Attack");
                 break;
         }
     }

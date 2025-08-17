@@ -36,4 +36,9 @@ public class CombatCalculator : MonoBehaviour
     {
         playerHand.TakeDamage(enemyHand.Status.Strength * power);
     }
+
+    public void PlayerToEnemyCounter()
+    {
+        enemyHand.TakeDamage(playerHand.Status.Strength * 0.25f);
+    }
 }

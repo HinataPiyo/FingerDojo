@@ -9,7 +9,6 @@ public class StateAttack : MonoBehaviour
     /// <summary>
     /// 与えるダメージ量を確定
     /// </summary>
-    /// <returns></returns>
     public void DecideDamageAmount()
     {
         float range = Random.value;

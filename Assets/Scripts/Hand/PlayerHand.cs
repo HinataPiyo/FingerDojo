@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// 敵の手を管理するクラス
@@ -9,7 +8,13 @@ public class PlayerHand : MonoBehaviour, IDamageble
     [SerializeField] GameObject taleDamageUI;
     [SerializeField] Transform handPos;
 
+    [Header("ステート管理"), SerializeField] PlayerStateController playerState;
+
+    [Header("Comamnd")]
+    [SerializeField] CommandCounter cmd_Counter;
+
     [Header("データ"), SerializeField] PlayerDataSO playerData;
+    [Header("アニメーション"), SerializeField] Animator handAnim;
     [Header("UI")]
     [SerializeField] HealthSlider healthSlider;
     float health;
@@ -26,6 +31,14 @@ public class PlayerHand : MonoBehaviour, IDamageble
     /// </summary>
     public void TakeDamage(float damage)
     {
+        // カウンター中だった場合
+        if (cmd_Counter.IsCounter)
+        {
+            CombatCalculator.instance.PlayerToEnemyCounter();
+            playerState.StateChange(BattleState.Counter_Success);
+            return;
+        }
+
         health -= damage;
         healthSlider.SetHealthUI(health, playerData.Status.Health);
 
@@ -36,11 +49,15 @@ public class PlayerHand : MonoBehaviour, IDamageble
         {
             Die();
         }
+        else
+        {
+            Hit();
+        }
     }
 
     public void Hit()
     {
-
+        playerState.StateChange(BattleState.Hit);
     }
 
     public void Die()
