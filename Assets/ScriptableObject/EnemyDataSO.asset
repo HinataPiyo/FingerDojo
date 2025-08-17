@@ -19,3 +19,4 @@ MonoBehaviour:
     strength: 60
     defense: 20
     speed: 1
+  idleTime: 3
