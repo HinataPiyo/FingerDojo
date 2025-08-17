@@ -3,16 +3,17 @@ using UnityEngine;
 /// <summary>
 /// 敵の手を管理するクラス
 /// </summary>
-public class EnemyHand : MonoBehaviour, IDamageble
+public class PlayerHand : MonoBehaviour, IDamageble
 {
     [SerializeField] GameObject taleDamageUI;
     [SerializeField] Transform handPos;
 
+    [SerializeField] PlayerDataSO playerData;
     float health;
 
     void Awake()
     {
-        health = 100;
+        health = playerData.Status.Health;
     }
 
     /// <summary>
@@ -21,12 +22,11 @@ public class EnemyHand : MonoBehaviour, IDamageble
     public void TakeDamage(float damage)
     {
         health -= damage;
-        Debug.Log("health" + health);
 
-        GameObject obj = Instantiate(taleDamageUI, handPos.position, Quaternion.identity, GameUIManager.instance.WorldCanvas);
+        GameObject obj = Instantiate(taleDamageUI, handPos.position, transform.rotation, GameUIManager.instance.WorldCanvas);
         obj.GetComponent<TakeDamageUI>().SetDamageUI(damage);
 
-        if(health <= 0)
+        if (health <= 0)
         {
             Die();
         }
