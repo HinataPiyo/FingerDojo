@@ -10,10 +10,12 @@ public class EnemyHand : MonoBehaviour, IDamageble
     [SerializeField] GameObject taleDamageUI;
     [SerializeField] Transform handPos;
     [Header("データ"), SerializeField] EnemyDataSO enemyData;
+    [Header("アニメーション"), SerializeField] Animator handAnim;
 
     [Header("UI")]
     [SerializeField] HealthSlider healthSlider;
     float health;
+    public StatusConst Status => enemyData.Status;
 
     void Awake()
     {
@@ -28,7 +30,6 @@ public class EnemyHand : MonoBehaviour, IDamageble
     {
         health -= damage;
         healthSlider.SetHealthUI(health, enemyData.Status.Health);
-        Debug.Log("health" + health);
 
         GameObject obj = Instantiate(taleDamageUI, handPos.position, Quaternion.identity, GameUIManager.instance.WorldCanvas);
         obj.GetComponent<TakeDamageUI>().SetDamageUI(damage);
@@ -47,5 +48,15 @@ public class EnemyHand : MonoBehaviour, IDamageble
     public void Die()
     {
 
+    }
+
+    public void SetHandAnimation(BattleState state)
+    {
+        switch (state)
+        {
+            case BattleState.Attack:
+                handAnim.SetTrigger("Attack");
+                break;
+        }
     }
 }

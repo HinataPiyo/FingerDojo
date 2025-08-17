@@ -13,6 +13,7 @@ public class PlayerHand : MonoBehaviour, IDamageble
     [Header("UI")]
     [SerializeField] HealthSlider healthSlider;
     float health;
+    public StatusConst Status => playerData.Status;
 
     void Awake()
     {

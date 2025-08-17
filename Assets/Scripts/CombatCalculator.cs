@@ -7,7 +7,7 @@ public class CombatCalculator : MonoBehaviour
 {
     public static CombatCalculator instance { get; private set; }
     [SerializeField] EnemyHand enemyHand;
-    float playerStrength = 100;
+    [SerializeField] PlayerHand playerHand;
 
     void Awake()
     {
@@ -19,9 +19,21 @@ public class CombatCalculator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// プレイヤーから敵にダメージ
+    /// </summary>
+    /// <param name="power"></param>
     public void PlayerToEnemyAttack(float power)
     {
-        enemyHand.TakeDamage(playerStrength * power);
-        Debug.Log("power" + power);
+        enemyHand.TakeDamage(playerHand.Status.Strength * power);
+    }
+
+    /// <summary>
+    /// 敵からプレイヤーにダメージ
+    /// </summary>
+    /// <param name="power"></param>
+    public void EnemyToPlayerAttack(float power)
+    {
+        playerHand.TakeDamage(enemyHand.Status.Strength * power);
     }
 }
