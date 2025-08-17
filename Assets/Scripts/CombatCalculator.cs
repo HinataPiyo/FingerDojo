@@ -7,6 +7,10 @@ public class CombatCalculator : MonoBehaviour
 {
     public static CombatCalculator instance { get; private set; }
 
+    float enemyHealth;
+    float playerHealth;
+    float playerStrength = 100;
+
     void Awake()
     {
         if (instance == null) instance = this;
@@ -15,5 +19,12 @@ public class CombatCalculator : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+    }
+
+    public void PlayerToEnemyAttack(float power)
+    {
+        enemyHealth -= playerStrength * power;
+        Debug.Log("health" + enemyHealth);
+        Debug.Log("power" + power);
     }
 }

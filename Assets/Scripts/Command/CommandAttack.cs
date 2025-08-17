@@ -29,7 +29,4 @@ public class CommandAttack : MonoBehaviour, ICommand
         cmd_TimingQTE.gameObject.SetActive(true);
         gameObject.SetActive(false);
     }
-
-
-    
 }
