@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 敵の手を管理するクラス
@@ -7,12 +9,16 @@ public class EnemyHand : MonoBehaviour, IDamageble
 {
     [SerializeField] GameObject taleDamageUI;
     [SerializeField] Transform handPos;
-    [SerializeField] EnemyDataSO enemyData;
+    [Header("データ"), SerializeField] EnemyDataSO enemyData;
+
+    [Header("UI")]
+    [SerializeField] HealthSlider healthSlider;
     float health;
 
     void Awake()
     {
         health = enemyData.Status.Health;
+        healthSlider.SetHealthUI(health, enemyData.Status.Health);
     }
 
     /// <summary>
@@ -21,12 +27,13 @@ public class EnemyHand : MonoBehaviour, IDamageble
     public void TakeDamage(float damage)
     {
         health -= damage;
+        healthSlider.SetHealthUI(health, enemyData.Status.Health);
         Debug.Log("health" + health);
 
         GameObject obj = Instantiate(taleDamageUI, handPos.position, Quaternion.identity, GameUIManager.instance.WorldCanvas);
         obj.GetComponent<TakeDamageUI>().SetDamageUI(damage);
 
-        if(health <= 0)
+        if (health <= 0)
         {
             Die();
         }
