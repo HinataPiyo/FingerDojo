@@ -6,9 +6,7 @@ using UnityEngine;
 public class CombatCalculator : MonoBehaviour
 {
     public static CombatCalculator instance { get; private set; }
-
-    float enemyHealth;
-    float playerHealth;
+    [SerializeField] EnemyHand enemyHand;
     float playerStrength = 100;
 
     void Awake()
@@ -23,8 +21,7 @@ public class CombatCalculator : MonoBehaviour
 
     public void PlayerToEnemyAttack(float power)
     {
-        enemyHealth -= playerStrength * power;
-        Debug.Log("health" + enemyHealth);
+        enemyHand.TakeDamage(playerStrength * power);
         Debug.Log("power" + power);
     }
 }

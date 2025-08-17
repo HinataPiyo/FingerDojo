@@ -32,6 +32,9 @@ public class CommandTimingQTE : MonoBehaviour, IPointerDownHandler
     /// </summary>
     public void OnPointerDown(PointerEventData eventData)
     {
+        // ボタンが押せない状態なら何もしない
+        if (button.interactable == false) return;
+
         CombatCalculator.instance.PlayerToEnemyAttack(timingBarCtrl.CheckTiming());
         // タイミングアクション決定時、コルーチン開始
         timingBarCtrl.CorDecideTimingQTE(() => EndTimingQTE());

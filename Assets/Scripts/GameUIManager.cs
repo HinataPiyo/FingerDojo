@@ -3,9 +3,10 @@ using UnityEngine;
 public class GameUIManager : MonoBehaviour
 {
     public static GameUIManager instance { get; private set; }
+    [Header("WorldCanvas"), SerializeField] Transform worldCanvas;
 
-    [Header("タイミングアクションバー"), SerializeField]
-    GameObject timingBarUI;
+
+    public Transform WorldCanvas => worldCanvas;
 
     void Awake()
     {

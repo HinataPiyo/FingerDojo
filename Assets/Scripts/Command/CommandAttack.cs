@@ -20,13 +20,15 @@ public class CommandAttack : MonoBehaviour, ICommand
     }
 
     /// <summary>
-    /// ボタンが押された時の処理
+    /// 指撃ボタンが押された時の処理
     /// </summary>
     public void ButtonOnClick()
     {
         // タイミングバーを出現
         timingBarCtrl.gameObject.SetActive(true);
         cmd_TimingQTE.gameObject.SetActive(true);
+
+        // 自身のボタンは非表示
         gameObject.SetActive(false);
     }
 }
