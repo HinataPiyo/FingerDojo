@@ -5,5 +5,7 @@ using UnityEngine;
 public class EnemyDataSO : ScriptableObject
 {
     [SerializeField] StatusConst status;
+    [SerializeField] float idleTime;        // 何もしない時間
     public StatusConst Status => status;
+    public float IdleTime => idleTime;
 }

@@ -23,7 +23,7 @@ public class EnemyStateController : MonoBehaviour
     /// </summary>
     void Initialize()
     {
-        StatChange(BattleState.Attack);
+        
     }
 
     void LateUpdate()
@@ -48,6 +48,12 @@ public class EnemyStateController : MonoBehaviour
     {
         _stateTime += Time.deltaTime;
 
+        // test
+        if (_stateTime > 3f)
+        {
+            StatChange(BattleState.Attack);
+        }
+
         switch (State)
         {
             case BattleState.BattleIntro:
@@ -65,11 +71,6 @@ public class EnemyStateController : MonoBehaviour
                     SetHandAnimation(BattleState.Attack);
                 }
 
-                if (_stateTime > 3f)
-                {
-                    StatChange(BattleState.Attack);
-                }
-
                 break;
             case BattleState.Counter:
                 break;
@@ -77,7 +78,7 @@ public class EnemyStateController : MonoBehaviour
                 break;
             case BattleState.Skill:
                 break;
-            case BattleState.Resolve:
+            case BattleState.Goad:
                 break;
             case BattleState.BattleClear:
                 break;

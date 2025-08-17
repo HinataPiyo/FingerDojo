@@ -22,7 +22,6 @@ public class CommandCounter : MonoBehaviour
         if (IsCounter)
         {
             elapsed += Time.deltaTime;
-            Debug.Log(elapsed);
 
             // カウンター終了
             if (elapsed >= counterJudgeTime)

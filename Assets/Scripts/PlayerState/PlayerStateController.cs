@@ -6,7 +6,7 @@ public class PlayerStateController : MonoBehaviour
 
     float _stateTime;
     bool stateEnter;
-    public BattleState State { get; private set; } = BattleState.BattleIntro;
+    public BattleState State { get; private set; } = BattleState.Idle;
 
     void Awake()
     {
@@ -50,7 +50,7 @@ public class PlayerStateController : MonoBehaviour
             case BattleState.Idle:
                 if (stateEnter)
                 {
-                    SetHandAnimation(BattleState.Idle);
+                    
                 }
 
                 break;
@@ -84,7 +84,7 @@ public class PlayerStateController : MonoBehaviour
                 break;
             case BattleState.Skill:
                 break;
-            case BattleState.Resolve:
+            case BattleState.Goad:
                 break;
             case BattleState.BattleClear:
                 break;
