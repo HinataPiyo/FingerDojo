@@ -3,6 +3,10 @@ using UnityEngine;
 public class PlayerStateController : MonoBehaviour
 {
     [Header("アニメーション"), SerializeField] Animator handAnim;
+    [Header("GameObjects"), SerializeField] TimingBarController timingBarCtrl;
+    [SerializeField] CommandTimingQTE cmd_TimingQTE;
+
+    [Header("Settings"), SerializeField] float counterDuration = 0.5f;
 
     PlayerHand playerHand;
     float _stateTime;
@@ -29,6 +33,14 @@ public class PlayerStateController : MonoBehaviour
         {
             stateEnter = false;
         }
+    }
+
+    /// <summary>
+    /// コマンドを実行する
+    /// </summary>
+    public void ExecuteCommand(CommandSO command)
+    {
+        command.Execute(gameObject);
     }
 
     /// <summary>
@@ -63,6 +75,9 @@ public class PlayerStateController : MonoBehaviour
                 {
                     GameUIManager.instance.SetCMDInteractable(false);
                     SetHandAnimation(BattleState.Attack);       // アニメーション
+                    // タイミングバーを出現
+                    timingBarCtrl.gameObject.SetActive(true);
+                    cmd_TimingQTE.gameObject.SetActive(true);
                 }
 
                 break;
@@ -72,6 +87,7 @@ public class PlayerStateController : MonoBehaviour
                     GameUIManager.instance.SetCMDInteractable(false);
                     SetHandAnimation(BattleState.Counter);
                 }
+                if (_stateTime > counterDuration) StateChange(BattleState.Idle);
                 break;
             case BattleState.Counter_Success:
                 if (stateEnter)

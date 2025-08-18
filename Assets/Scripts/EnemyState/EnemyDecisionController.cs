@@ -7,6 +7,7 @@ using UnityEngine;
 public class EnemyDecisionController : MonoBehaviour
 {
     [SerializeField] EnemyDataSO enemyDataSO;
+    [SerializeField] EnemyBehaviorProfile behaviorProfile;
     [SerializeField] EnemyStateController enemyState;
     [SerializeField] PlayerStateController playerState;
 
@@ -22,6 +23,8 @@ public class EnemyDecisionController : MonoBehaviour
         while (true)
         {
             isDecide = false;
+            // アイドル状態に遷移
+            enemyState.StatChange(BattleState.Idle);
             yield return new WaitForSeconds(enemyDataSO.IdleTime);
 
             while (!isDecide)
@@ -34,23 +37,10 @@ public class EnemyDecisionController : MonoBehaviour
 
     void DecideState()
     {
-        // プレイヤーが待機状態なら
-        if (playerState.State == BattleState.Idle || playerState.State == BattleState.Counter)
+        if (enemyState.State == BattleState.Idle)
         {
-            int rand = Random.Range(0, 1);
-
-            if (rand == 0) enemyState.StatChange(BattleState.Attack);
-            else if (rand == 1) enemyState.StatChange(BattleState.Refresh);
-            else if (rand == 2) enemyState.StatChange(BattleState.Skill);
-            else if (rand == 3) enemyState.StatChange(BattleState.Goad);
-            isDecide = true;
-        }
-        else if (playerState.State == BattleState.Attack)
-        {
-            int rand = Random.Range(0, 2);
-
-            if (rand == 0) enemyState.StatChange(BattleState.Attack);
-            else if (rand == 1) enemyState.StatChange(BattleState.Counter);
+            var nextAction = behaviorProfile.GetNextAction(playerState);
+            enemyState.StatChange(nextAction);
             isDecide = true;
         }
     }

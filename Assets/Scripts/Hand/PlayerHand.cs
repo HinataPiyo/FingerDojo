@@ -10,7 +10,6 @@ public class PlayerHand : MonoBehaviour, IDamageble
     [SerializeField] Transform handPos;
 
     [Header("ステート管理"), SerializeField] PlayerStateController playerState;
-    [Header("Comamnd"), SerializeField] CommandCounter cmd_Counter;
 
     [Header("データ"), SerializeField] PlayerDataSO playerData;
     [Header("アニメーション"), SerializeField] Animator handAnim;
@@ -31,7 +30,7 @@ public class PlayerHand : MonoBehaviour, IDamageble
     public void TakeDamage(float damage)
     {
         // カウンター中だった場合
-        if (cmd_Counter.IsCounter)
+        if (playerState.State == BattleState.Counter)
         {
             CombatCalculator.instance.PlayerToEnemyCounter();
             playerState.StateChange(BattleState.Counter_Success);

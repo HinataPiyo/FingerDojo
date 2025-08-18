@@ -10,7 +10,6 @@ public class CommandTimingQTE : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] PlayerStateController playerState;
     [SerializeField] TimingBarController timingBarCtrl;
-    [SerializeField] CommandAttack cmd_Attack;
     Button button;
 
     void Awake()
@@ -48,7 +47,6 @@ public class CommandTimingQTE : MonoBehaviour, IPointerDownHandler
     void EndTimingQTE()
     {
         gameObject.SetActive(false);
-        cmd_Attack.gameObject.SetActive(true);
         playerState.StateChange(BattleState.Idle);
     }
 

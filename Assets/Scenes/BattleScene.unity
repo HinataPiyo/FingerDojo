@@ -169,7 +169,6 @@ MonoBehaviour:
   taleDamageUI: {fileID: 5282685873826585990, guid: 83f79e2e855f04b47bbb4e5590157656, type: 3}
   handPos: {fileID: 1316494050}
   playerState: {fileID: 130995171}
-  cmd_Counter: {fileID: 1732969720}
   playerData: {fileID: 11400000, guid: 13e56f07885d9da42ba71849517852af, type: 2}
   handAnim: {fileID: 130995170}
   healthSlider: {fileID: 1587052829}
@@ -208,6 +207,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handAnim: {fileID: 130995170}
+  timingBarCtrl: {fileID: 0}
+  cmd_TimingQTE: {fileID: 0}
+  counterDuration: 0.5
 --- !u!1 &254627908
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,6 +323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyDataSO: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
+  behaviorProfile: {fileID: 11400000, guid: 9f3f62a1e7341fd47ab2bf0ec6b5572a, type: 2}
   enemyState: {fileID: 254627913}
   playerState: {fileID: 130995171}
 --- !u!1 &364898442
@@ -1025,7 +1028,6 @@ GameObject:
   - component: {fileID: 1022039425}
   - component: {fileID: 1022039427}
   - component: {fileID: 1022039426}
-  - component: {fileID: 1022039429}
   - component: {fileID: 1022039428}
   m_Layer: 5
   m_Name: goad
@@ -1118,7 +1120,7 @@ MonoBehaviour:
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0.05
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -1135,18 +1137,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1022039429
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1022039424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19cd827773fcc8b46933fa7f7e3081c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1069429826
 GameObject:
   m_ObjectHideFlags: 0
@@ -1250,7 +1240,7 @@ MonoBehaviour:
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0.05
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -1278,8 +1268,8 @@ GameObject:
   - component: {fileID: 1094398215}
   - component: {fileID: 1094398217}
   - component: {fileID: 1094398216}
-  - component: {fileID: 1094398219}
   - component: {fileID: 1094398218}
+  - component: {fileID: 1094398219}
   m_Layer: 5
   m_Name: main_attack
   m_TagString: Untagged
@@ -1371,7 +1361,7 @@ MonoBehaviour:
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0.05
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -1397,12 +1387,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1094398214}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9e05fa4042e301428f74404850eabd8, type: 3}
+  m_Script: {fileID: 11500000, guid: 662b203d00b6fb54da6052253b9c34bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerState: {fileID: 130995171}
-  timingBarCtrl: {fileID: 1900360604}
-  cmd_TimingQTE: {fileID: 1802032279}
+  commandToExecute: {fileID: 11400000, guid: fa7886b4857058f4b961dd5ffd9dad0a, type: 2}
 --- !u!1001 &1112884969
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2138,8 +2126,8 @@ GameObject:
   - component: {fileID: 1732969716}
   - component: {fileID: 1732969718}
   - component: {fileID: 1732969717}
-  - component: {fileID: 1732969720}
   - component: {fileID: 1732969719}
+  - component: {fileID: 1732969720}
   m_Layer: 5
   m_Name: counter
   m_TagString: Untagged
@@ -2231,7 +2219,7 @@ MonoBehaviour:
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0.05
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -2257,10 +2245,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1732969715}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2def686350b6855479f67efc2b6d316d, type: 3}
+  m_Script: {fileID: 11500000, guid: 662b203d00b6fb54da6052253b9c34bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerState: {fileID: 130995171}
+  commandToExecute: {fileID: 11400000, guid: e11f20b7697fb5242afab2b36a89c40c, type: 2}
 --- !u!1 &1776936931
 GameObject:
   m_ObjectHideFlags: 0
@@ -2272,8 +2260,8 @@ GameObject:
   - component: {fileID: 1776936932}
   - component: {fileID: 1776936934}
   - component: {fileID: 1776936933}
-  - component: {fileID: 1776936936}
   - component: {fileID: 1776936935}
+  - component: {fileID: 1776936936}
   m_Layer: 5
   m_Name: refresh
   m_TagString: Untagged
@@ -2365,7 +2353,7 @@ MonoBehaviour:
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0.05
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -2391,10 +2379,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1776936931}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4ce97e5be8992c4fac58a2b5e55545b, type: 3}
+  m_Script: {fileID: 11500000, guid: 662b203d00b6fb54da6052253b9c34bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerState: {fileID: 130995171}
+  commandToExecute: {fileID: 11400000, guid: 36b9f44959a151c4ea7cc6274dbfec48, type: 2}
 --- !u!1 &1802032277
 GameObject:
   m_ObjectHideFlags: 0
@@ -2448,7 +2436,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerState: {fileID: 130995171}
   timingBarCtrl: {fileID: 1900360604}
-  cmd_Attack: {fileID: 1094398219}
 --- !u!114 &1802032280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2476,7 +2463,7 @@ MonoBehaviour:
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0.05
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
