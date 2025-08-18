@@ -4,12 +4,14 @@ public class PlayerStateController : MonoBehaviour
 {
     [Header("アニメーション"), SerializeField] Animator handAnim;
 
+    PlayerHand playerHand;
     float _stateTime;
     bool stateEnter;
     public BattleState State { get; private set; } = BattleState.Idle;
 
     void Awake()
     {
+        playerHand = GetComponent<PlayerHand>();
         Initialize();
     }
 
@@ -37,6 +39,7 @@ public class PlayerStateController : MonoBehaviour
         State = nextState;
         _stateTime = 0;
         stateEnter = true;
+        Debug.Log("player : " + State);
     }
 
     void Update()
@@ -50,21 +53,23 @@ public class PlayerStateController : MonoBehaviour
             case BattleState.Idle:
                 if (stateEnter)
                 {
-                    
+                    // コマンドボタンを押せる状態にする
+                    GameUIManager.instance.SetCMDInteractable(true);
                 }
 
                 break;
             case BattleState.Attack:
                 if (stateEnter)
                 {
-                    // アニメーション
-                    SetHandAnimation(BattleState.Attack);
+                    GameUIManager.instance.SetCMDInteractable(false);
+                    SetHandAnimation(BattleState.Attack);       // アニメーション
                 }
 
                 break;
             case BattleState.Counter:
                 if (stateEnter)
                 {
+                    GameUIManager.instance.SetCMDInteractable(false);
                     SetHandAnimation(BattleState.Counter);
                 }
                 break;
@@ -73,16 +78,29 @@ public class PlayerStateController : MonoBehaviour
                 {
                     SetHandAnimation(BattleState.Counter_Success);
                 }
+
+                if(_stateTime > 0.5) StateChange(BattleState.Idle);
                 break;
             case BattleState.Hit:
                 if (stateEnter)
                 {
                     SetHandAnimation(BattleState.Hit);
                 }
+                if(_stateTime > 0.25) StateChange(BattleState.Idle);
                 break;
             case BattleState.Refresh:
+                if (stateEnter)
+                {
+                    GameUIManager.instance.SetCMDInteractable(false);
+                    playerHand.Refresh();
+                }
+
                 break;
             case BattleState.Skill:
+                if (stateEnter)
+                {
+                    GameUIManager.instance.SetCMDInteractable(false);
+                }
                 break;
             case BattleState.Goad:
                 break;

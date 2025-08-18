@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -9,21 +10,19 @@ public class PlayerHand : MonoBehaviour, IDamageble
     [SerializeField] Transform handPos;
 
     [Header("ステート管理"), SerializeField] PlayerStateController playerState;
-
-    [Header("Comamnd")]
-    [SerializeField] CommandCounter cmd_Counter;
+    [Header("Comamnd"), SerializeField] CommandCounter cmd_Counter;
 
     [Header("データ"), SerializeField] PlayerDataSO playerData;
     [Header("アニメーション"), SerializeField] Animator handAnim;
-    [Header("UI")]
-    [SerializeField] HealthSlider healthSlider;
-    float health;
+    [Header("UI"), SerializeField] HealthSlider healthSlider;
     public StatusConst Status => playerData.Status;
+    float health;
+    Coroutine cor_Refresh;
 
     void Awake()
     {
         health = playerData.Status.Health;
-        healthSlider.SetHealthUI(health, playerData.Status.Health);
+        healthSlider.HitSetHealthUI(health, playerData.Status.Health);
     }
 
     /// <summary>
@@ -40,9 +39,9 @@ public class PlayerHand : MonoBehaviour, IDamageble
         }
 
         health -= damage;
-        healthSlider.SetHealthUI(health, playerData.Status.Health);
+        healthSlider.HitSetHealthUI(health, playerData.Status.Health);
 
-        GameObject obj = Instantiate(taleDamageUI, handPos.position, transform.rotation, GameUIManager.instance.WorldCanvas);
+        GameObject obj = Instantiate(taleDamageUI, handPos.position, Quaternion.identity, GameUIManager.instance.WorldCanvas);
         obj.GetComponent<TakeDamageUI>().SetDamageUI(damage);
 
         if (health <= 0)
@@ -63,5 +62,48 @@ public class PlayerHand : MonoBehaviour, IDamageble
     public void Die()
     {
 
+    }
+
+    /// <summary>
+    /// 休息コマンドの実行処理
+    /// </summary>
+    public void Refresh()
+    {
+        if (cor_Refresh != null)
+        {
+            StopCoroutine(cor_Refresh);
+            cor_Refresh = null;
+        }
+
+        cor_Refresh = StartCoroutine(RefreshFlow());
+    }
+
+    /// <summary>
+    /// 休息フロー
+    /// </summary>
+    IEnumerator RefreshFlow()
+    {
+        // 回復時間が0以下に設定されている場合は、何もせずに終了します。
+        if (playerData.RefreshTime <= 0f)
+        {
+            playerState.StateChange(BattleState.Idle);
+            yield break;
+        }
+
+        float healPerSecond = playerData.RefreshAmount / playerData.RefreshTime;
+        float timer = 0f;
+
+        while (timer < playerData.RefreshTime)
+        {
+            // 1秒あたりの回復量に基づいて体力を加算します。
+            health += healPerSecond * Time.deltaTime;
+            health = Mathf.Clamp(health, 0, playerData.Status.Health);
+            healthSlider.RefreshSetHealthUI(health, playerData.Status.Health);
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        playerState.StateChange(BattleState.Idle);
     }
 }

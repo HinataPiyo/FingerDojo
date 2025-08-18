@@ -19,3 +19,5 @@ MonoBehaviour:
     strength: 100
     defense: 50
     speed: 1
+  refreshTime: 3
+  refreshAmount: 50

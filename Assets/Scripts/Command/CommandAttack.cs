@@ -6,6 +6,7 @@ using UnityEngine.UI;
 /// </summary>
 public class CommandAttack : MonoBehaviour, ICommand
 {
+    [SerializeField] PlayerStateController playerState;
     [SerializeField] TimingBarController timingBarCtrl;
     [SerializeField] CommandTimingQTE cmd_TimingQTE;
     Button button;
@@ -23,6 +24,7 @@ public class CommandAttack : MonoBehaviour, ICommand
     /// </summary>
     public void ButtonOnClick()
     {
+        playerState.StateChange(BattleState.Attack);
         // タイミングバーを出現
         timingBarCtrl.gameObject.SetActive(true);
         cmd_TimingQTE.gameObject.SetActive(true);

@@ -18,7 +18,7 @@ public class EnemyHand : MonoBehaviour, IDamageble
     void Awake()
     {
         health = enemyData.Status.Health;
-        healthSlider.SetHealthUI(health, enemyData.Status.Health);
+        healthSlider.HitSetHealthUI(health, enemyData.Status.Health);
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class EnemyHand : MonoBehaviour, IDamageble
     public void TakeDamage(float damage)
     {
         health -= damage;
-        healthSlider.SetHealthUI(health, enemyData.Status.Health);
+        healthSlider.HitSetHealthUI(health, enemyData.Status.Health);
 
         GameObject obj = Instantiate(taleDamageUI, handPos.position, Quaternion.identity, GameUIManager.instance.WorldCanvas);
         obj.GetComponent<TakeDamageUI>().SetDamageUI(damage);

@@ -21,7 +21,7 @@ public class HealthSlider : MonoBehaviour
     /// <summary>
     /// スライダーを更新
     /// </summary>
-    public void SetHealthUI(float now, float max)
+    public void HitSetHealthUI(float now, float max)
     {
         beforHP = healthSlider.value;
         beforSlider.value = beforHP;
@@ -34,6 +34,11 @@ public class HealthSlider : MonoBehaviour
         }
 
         cor = StartCoroutine(HealthSliderMotion());
+    }
+
+    public void RefreshSetHealthUI(float now, float max)
+    {
+        healthSlider.value = now / max;
     }
 
     /// <summary>

@@ -6,12 +6,12 @@ public class TimingBarController : MonoBehaviour
 {
     [SerializeField] Slider timingSlider;
     [SerializeField] float power = 2f;     // 2=QuadIn, 3=CubicIn など
-    static readonly float Duration = 1f;
+    static readonly float BarPosDuration = 1f;
+    static readonly float DispTimingbarTime = 0.5f;       // QTE決定後バーの表示時間
 
     float currentPositionX;         // バーの現在の位置 (-1 ~ 1)
 
     Coroutine cor_QTE;
-    float dispTimingbarTime = 1f;       // QTE決定後バーの表示時間
     float elapsed;
     bool isTurn;
     bool isClick;
@@ -63,7 +63,7 @@ public class TimingBarController : MonoBehaviour
     {
         isClick = true;
 
-        float elapsed = dispTimingbarTime;
+        float elapsed = DispTimingbarTime;
         while (elapsed > 0)
         {
             elapsed -= Time.deltaTime;
@@ -90,10 +90,10 @@ public class TimingBarController : MonoBehaviour
     void AdjustBarPosition()
     {
         // 進む
-        if (elapsed < Duration && !isTurn)
+        if (elapsed < BarPosDuration && !isTurn)
         {
             elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / Duration);
+            float t = Mathf.Clamp01(elapsed / BarPosDuration);
             float eased = EasingConst.EaseInPow(t, power);
             currentPositionX = Mathf.LerpUnclamped(0, 1, eased);
             if (currentPositionX >= 1f)
@@ -105,7 +105,7 @@ public class TimingBarController : MonoBehaviour
         else    // 戻る
         {
             elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / Duration);
+            float t = Mathf.Clamp01(elapsed / BarPosDuration);
             float eased = EasingConst.EaseOutPow(t, power);
             currentPositionX = Mathf.LerpUnclamped(1, 0, eased);
             if (currentPositionX <= 0)

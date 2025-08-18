@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class CommandTimingQTE : MonoBehaviour, IPointerDownHandler
 {
+    [SerializeField] PlayerStateController playerState;
     [SerializeField] TimingBarController timingBarCtrl;
     [SerializeField] CommandAttack cmd_Attack;
     Button button;
@@ -48,6 +49,7 @@ public class CommandTimingQTE : MonoBehaviour, IPointerDownHandler
     {
         gameObject.SetActive(false);
         cmd_Attack.gameObject.SetActive(true);
+        playerState.StateChange(BattleState.Idle);
     }
 
 }

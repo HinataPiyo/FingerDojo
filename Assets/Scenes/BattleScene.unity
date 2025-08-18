@@ -1400,6 +1400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e05fa4042e301428f74404850eabd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerState: {fileID: 130995171}
   timingBarCtrl: {fileID: 1900360604}
   cmd_TimingQTE: {fileID: 1802032279}
 --- !u!1001 &1112884969
@@ -1782,6 +1783,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldCanvas: {fileID: 1169830270}
+  cmd_Buttons:
+  - {fileID: 1094398218}
+  - {fileID: 1732969719}
+  - {fileID: 1776936935}
+  - {fileID: 1069429830}
+  - {fileID: 1022039428}
 --- !u!4 &1212062149
 Transform:
   m_ObjectHideFlags: 0
@@ -2387,6 +2394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4ce97e5be8992c4fac58a2b5e55545b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerState: {fileID: 130995171}
 --- !u!1 &1802032277
 GameObject:
   m_ObjectHideFlags: 0
@@ -2438,6 +2446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52bb418b280406649a2afa278e361dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerState: {fileID: 130995171}
   timingBarCtrl: {fileID: 1900360604}
   cmd_Attack: {fileID: 1094398219}
 --- !u!114 &1802032280
