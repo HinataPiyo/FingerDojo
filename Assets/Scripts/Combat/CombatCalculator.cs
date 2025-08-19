@@ -37,8 +37,19 @@ public class CombatCalculator : MonoBehaviour
         playerHand.TakeDamage(enemyHand.Status.Strength * power);
     }
 
+    /// <summary>
+    /// プイレイヤーから敵にカウンター
+    /// </summary>
     public void PlayerToEnemyCounter()
     {
         enemyHand.TakeDamage(playerHand.Status.Strength * 0.25f);
+    }
+
+    /// <summary>
+    /// プイレイヤーから敵にカウンター
+    /// </summary>
+    public void EnemyToPlayerCounter()
+    {
+        playerHand.TakeDamage(enemyHand.Status.Strength * 0.25f);
     }
 }

@@ -209,6 +209,7 @@ MonoBehaviour:
   handAnim: {fileID: 130995170}
   timingBarCtrl: {fileID: 1900360604}
   cmd_TimingQTE: {fileID: 1802032279}
+  enemyCounter: {fileID: 254627915}
   counterDuration: 0.5
 --- !u!1 &254627908
 GameObject:
@@ -224,6 +225,7 @@ GameObject:
   - component: {fileID: 254627913}
   - component: {fileID: 254627912}
   - component: {fileID: 254627914}
+  - component: {fileID: 254627915}
   m_Layer: 0
   m_Name: EnemyHand
   m_TagString: Untagged
@@ -262,7 +264,7 @@ MonoBehaviour:
   taleDamageUI: {fileID: 5282685873826585990, guid: 83f79e2e855f04b47bbb4e5590157656, type: 3}
   handPos: {fileID: 1586893061}
   enemyState: {fileID: 254627913}
-  enemyProfileSO: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
+  enemyProfile: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
   healthSlider: {fileID: 1112884971}
 --- !u!95 &254627911
 Animator:
@@ -312,6 +314,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handAnim: {fileID: 254627911}
   enemyHand: {fileID: 254627910}
+  enemyProfile: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
 --- !u!114 &254627914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,6 +331,21 @@ MonoBehaviour:
   enemyState: {fileID: 254627913}
   playerState: {fileID: 130995171}
   enemyHand: {fileID: 254627910}
+  enemyCounter: {fileID: 254627915}
+--- !u!114 &254627915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254627908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a06571c9e3da7c4b81e93f35aed8b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyState: {fileID: 254627913}
+  enemyProfile: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
 --- !u!1 &364898442
 GameObject:
   m_ObjectHideFlags: 0

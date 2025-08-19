@@ -81,7 +81,7 @@ public class TimingBarController : MonoBehaviour
     public float CheckTiming()
     {
         // 攻撃力の強さが決まる
-        return currentPositionX + 0.5f;
+        return currentPositionX * 2 + 0.5f;
     }
 
     /// <summary>

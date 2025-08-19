@@ -7,15 +7,14 @@ public class EnemyStateController : MonoBehaviour
 {
     [Header("アニメーション"), SerializeField] Animator handAnim;
     [Header("参照コンポーネント"), SerializeField] EnemyHand enemyHand;
-    EnemyActionAttack state_Attack;
+    [SerializeField] EnemyProfileSO enemyProfile;
 
     float _stateTime;
     bool stateEnter;
-    public BattleState State { get; private set; } = BattleState.BattleIntro;
+    public BattleState State { get; private set; } = BattleState.Idle;
 
     void Awake()
     {
-        state_Attack = GetComponent<EnemyActionAttack>();
         Initialize();
     }
 
@@ -38,11 +37,12 @@ public class EnemyStateController : MonoBehaviour
     /// <summary>
     /// ステートの切り替え
     /// </summary>
-    public void StatChange(BattleState nextState)
+    public void StateChange(BattleState nextState)
     {
         State = nextState;
         _stateTime = 0;
         stateEnter = true;
+        Debug.Log("enemy : " + State);
     }
 
     void Update()
@@ -65,9 +65,16 @@ public class EnemyStateController : MonoBehaviour
                     // アニメーション(アニメーションイベントでに攻撃発火)
                     SetHandAnimation(BattleState.Attack);
                 }
-
+                if (_stateTime > enemyProfile.AttackStateDuration) StateChange(BattleState.Idle);
                 break;
             case BattleState.Counter:
+                if (stateEnter)
+                {
+                    // SetHandAnimation(BattleState.Counter);
+                }
+                break;
+            case BattleState.Counter_Success:
+                if (_stateTime > enemyProfile.CounterStateDuration) StateChange(BattleState.Idle);
                 break;
             case BattleState.Refresh:
                 if (stateEnter)
@@ -91,7 +98,7 @@ public class EnemyStateController : MonoBehaviour
     /// <summary>
     /// アニメーションを再生する
     /// </summary>
-    public void SetHandAnimation(BattleState state)
+    void SetHandAnimation(BattleState state)
     {
         switch (state)
         {

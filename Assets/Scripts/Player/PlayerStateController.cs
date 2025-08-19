@@ -5,6 +5,7 @@ public class PlayerStateController : MonoBehaviour
     [Header("アニメーション"), SerializeField] Animator handAnim;
     [Header("GameObjects"), SerializeField] TimingBarController timingBarCtrl;
     [SerializeField] CommandTimingQTE cmd_TimingQTE;
+    [SerializeField] EnemyActionCounter enemyCounter;
 
     [Header("Settings"), SerializeField] float counterDuration = 0.5f;
 
@@ -51,7 +52,6 @@ public class PlayerStateController : MonoBehaviour
         State = nextState;
         _stateTime = 0;
         stateEnter = true;
-        Debug.Log("player : " + State);
     }
 
     void Update()
@@ -78,6 +78,8 @@ public class PlayerStateController : MonoBehaviour
                     // タイミングバーを出現
                     timingBarCtrl.gameObject.SetActive(true);
                     cmd_TimingQTE.gameObject.SetActive(true);
+
+                    enemyCounter.CheckCounterAction();      // 敵がカウンターをするか判定
                 }
 
                 break;
@@ -87,6 +89,7 @@ public class PlayerStateController : MonoBehaviour
                     GameUIManager.instance.SetCMDInteractable(false);
                     SetHandAnimation(BattleState.Counter);
                 }
+                // counterDurationの間 CMD UI は非アクティブ
                 if (_stateTime > counterDuration) StateChange(BattleState.Idle);
                 break;
             case BattleState.Counter_Success:

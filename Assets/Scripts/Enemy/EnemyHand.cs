@@ -9,19 +9,19 @@ public class EnemyHand : MonoBehaviour, IDamageble
     [SerializeField] GameObject taleDamageUI;
     [SerializeField] Transform handPos;
     [Header("ステート管理"), SerializeField] EnemyStateController enemyState;
-    [Header("データ"), SerializeField] EnemyProfileSO enemyProfileSO;
+    [Header("データ"), SerializeField] EnemyProfileSO enemyProfile;
 
     [Header("UI")]
     [SerializeField] HealthSlider healthSlider;
     float health;
     Coroutine cor_Refresh;
-    public StatusConst Status => enemyProfileSO.Status;
-    public float GetCurrentHealth() { return health; }
+    public StatusConst Status => enemyProfile.Status;
+    public float GetCurrentHealth => health;
 
     void Awake()
     {
-        health = enemyProfileSO.Status.Health;
-        healthSlider.HitSetHealthUI(health, enemyProfileSO.Status.Health);
+        health = enemyProfile.Status.Health;
+        healthSlider.HitSetHealthUI(health, enemyProfile.Status.Health);
     }
 
     /// <summary>
@@ -29,8 +29,16 @@ public class EnemyHand : MonoBehaviour, IDamageble
     /// </summary>
     public void TakeDamage(float damage)
     {
+        // カウンター中だった場合
+        if (enemyState.State == BattleState.Counter)
+        {
+            CombatCalculator.instance.EnemyToPlayerCounter();
+            enemyState.StateChange(BattleState.Counter_Success);
+            return;
+        }
+
         health -= damage;
-        healthSlider.HitSetHealthUI(health, enemyProfileSO.Status.Health);
+        healthSlider.HitSetHealthUI(health, enemyProfile.Status.Health);
 
         GameObject obj = Instantiate(taleDamageUI, handPos.position, Quaternion.identity, GameUIManager.instance.WorldCanvas);
         obj.GetComponent<TakeDamageUI>().SetDamageUI(damage);
@@ -38,6 +46,10 @@ public class EnemyHand : MonoBehaviour, IDamageble
         if (health <= 0)
         {
             Die();
+        }
+        else
+        {
+            Hit();
         }
     }
 
@@ -71,26 +83,26 @@ public class EnemyHand : MonoBehaviour, IDamageble
     IEnumerator RefreshFlow()
     {
         // 回復時間が0以下に設定されている場合は、何もせずに終了します。
-        if (enemyProfileSO.Status.RefreshTime <= 0f)
+        if (enemyProfile.Status.RefreshTime <= 0f)
         {
-            enemyState.StatChange(BattleState.Idle);
+            enemyState.StateChange(BattleState.Idle);
             yield break;
         }
 
-        float healPerSecond = enemyProfileSO.Status.RefreshAmount / enemyProfileSO.Status.RefreshTime;
+        float healPerSecond = enemyProfile.Status.RefreshAmount / enemyProfile.Status.RefreshTime;
         float timer = 0f;
 
-        while (timer < enemyProfileSO.Status.RefreshTime)
+        while (timer < enemyProfile.Status.RefreshTime)
         {
             // 1秒あたりの回復量に基づいて体力を加算します。
             health += healPerSecond * Time.deltaTime;
-            health = Mathf.Clamp(health, 0, enemyProfileSO.Status.Health);
-            healthSlider.RefreshSetHealthUI(health, enemyProfileSO.Status.Health);
+            health = Mathf.Clamp(health, 0, enemyProfile.Status.Health);
+            healthSlider.RefreshSetHealthUI(health, enemyProfile.Status.Health);
 
             timer += Time.deltaTime;
             yield return null;
         }
 
-        enemyState.StatChange(BattleState.Idle);
+        enemyState.StateChange(BattleState.Idle);
     }
 }

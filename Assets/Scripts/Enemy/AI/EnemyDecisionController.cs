@@ -21,8 +21,8 @@ public class EnemyDecisionController : MonoBehaviour
 
     [Tooltip("敵のHPや回復などを管理するコンポーネント")]
     [SerializeField] EnemyHand enemyHand;
+    [SerializeField] EnemyActionCounter enemyCounter;
 
-    bool isDecided;
 
     void Start()
     {
@@ -37,15 +37,9 @@ public class EnemyDecisionController : MonoBehaviour
     {
         while (true)
         {
-            enemyState.StatChange(BattleState.Idle);
-            isDecided = false;
             yield return new WaitForSeconds(enemyProfile.IdleTime);
 
-            while (!isDecided)
-            {
-                DecideState();
-                yield return null;
-            }
+            DecideState();
         }
     }
 
@@ -56,13 +50,12 @@ public class EnemyDecisionController : MonoBehaviour
     void DecideState()
     {
         if (enemyState.State != BattleState.Idle) return;
-
+        
         // --- 優先順位1: 緊急回復 ---
         // HPが閾値を下回っている場合、最優先で回復を試みる
-        if (enemyHand.GetCurrentHealth() / enemyHand.Status.Health <= enemyProfile.LowHealthRefreshThreshold)
+        if (enemyHand.GetCurrentHealth / enemyHand.Status.Health <= enemyProfile.LowHealthRefreshThreshold)
         {
-            enemyState.StatChange(BattleState.Refresh);
-            isDecided = true;
+            enemyState.StateChange(BattleState.Refresh);
             return;
         }
 
@@ -78,7 +71,7 @@ public class EnemyDecisionController : MonoBehaviour
         }
 
         // 回復（HPが満タンでなければ選択肢に入れる）
-        if (enemyHand.GetCurrentHealth() < enemyHand.Status.Health)
+        if (enemyHand.GetCurrentHealth < enemyHand.Status.Health)
         {
             availableActions.Add(BattleState.Refresh);
             weights.Add(enemyProfile.RefreshWeight);
@@ -95,13 +88,7 @@ public class EnemyDecisionController : MonoBehaviour
         // --- 重み付けランダム選択 ---
         if (availableActions.Count > 0)
         {
-            enemyState.StatChange(GetWeightedRandomAction(availableActions, weights));
-            isDecided = true;
-        }
-        else
-        {
-            // 万が一、実行可能なアクションが何もない場合は、待機を継続
-            isDecided = true; // ループを抜けるためにtrueにする
+            enemyState.StateChange(GetWeightedRandomAction(availableActions, weights));
         }
     }
 
