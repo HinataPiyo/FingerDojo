@@ -6,7 +6,8 @@ using UnityEngine;
 public class EnemyStateController : MonoBehaviour
 {
     [Header("アニメーション"), SerializeField] Animator handAnim;
-    StateAttack state_Attack;
+    [Header("参照コンポーネント"), SerializeField] EnemyHand enemyHand;
+    EnemyActionAttack state_Attack;
 
     float _stateTime;
     bool stateEnter;
@@ -14,7 +15,7 @@ public class EnemyStateController : MonoBehaviour
 
     void Awake()
     {
-        state_Attack = GetComponent<StateAttack>();
+        state_Attack = GetComponent<EnemyActionAttack>();
         Initialize();
     }
 
@@ -23,7 +24,7 @@ public class EnemyStateController : MonoBehaviour
     /// </summary>
     void Initialize()
     {
-        
+
     }
 
     void LateUpdate()
@@ -48,12 +49,6 @@ public class EnemyStateController : MonoBehaviour
     {
         _stateTime += Time.deltaTime;
 
-        // test
-        if (_stateTime > 3f)
-        {
-            StatChange(BattleState.Attack);
-        }
-
         switch (State)
         {
             case BattleState.BattleIntro:
@@ -67,7 +62,7 @@ public class EnemyStateController : MonoBehaviour
             case BattleState.Attack:
                 if (stateEnter)
                 {
-                    // アニメーション
+                    // アニメーション(アニメーションイベントでに攻撃発火)
                     SetHandAnimation(BattleState.Attack);
                 }
 
@@ -75,6 +70,10 @@ public class EnemyStateController : MonoBehaviour
             case BattleState.Counter:
                 break;
             case BattleState.Refresh:
+                if (stateEnter)
+                {
+                    enemyHand.Refresh();
+                }
                 break;
             case BattleState.Skill:
                 break;
@@ -88,7 +87,7 @@ public class EnemyStateController : MonoBehaviour
                 break;
         }
     }
-    
+
     /// <summary>
     /// アニメーションを再生する
     /// </summary>

@@ -10,14 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81c1cbf5d3834974488dec142750dcbd, type: 3}
-  m_Name: EnemyAction
+  m_Name: EnemyAction_Refresh
   m_EditorClassIdentifier: 
-  actionState: 2
-  weight: 75
+  actionState: 6
+  weight: 50
   playerStateConditions:
   - requiredPlayerState: 1
   - requiredPlayerState: 2
   - requiredPlayerState: 5
   - requiredPlayerState: 6
-  - requiredPlayerState: 7
-  - requiredPlayerState: 8

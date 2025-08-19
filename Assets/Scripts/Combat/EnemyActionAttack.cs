@@ -4,10 +4,10 @@ using UnityEngine;
 /// <summary>
 /// 敵の攻撃ステートを管理するクラス
 /// </summary>
-public class StateAttack : MonoBehaviour
+public class EnemyActionAttack : MonoBehaviour
 {
     /// <summary>
-    /// 与えるダメージ量を確定
+    /// 与えるダメージ量を確定(アニメーションイベントでモーションに合わせて攻撃を適用)
     /// </summary>
     public void DecideDamageAmount()
     {

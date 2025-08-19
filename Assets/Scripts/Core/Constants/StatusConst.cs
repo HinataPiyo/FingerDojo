@@ -9,6 +9,10 @@ public class StatusConst
     [SerializeField] float strength;     // 攻撃力
     [SerializeField] float defense;      // 防御力
     [SerializeField] float speed;        // CTの長さに起因
+    
+    [Header("回復設定")]
+    [SerializeField, Tooltip("休息コマンドで回復する総量")] float refreshAmount;
+    [SerializeField, Tooltip("休息コマンドで回復する時間")] float refreshTime;
 
     public string Name => name;
     public RANK Rank => rank;
@@ -16,6 +20,9 @@ public class StatusConst
     public float Strength => strength;
     public float Defense => defense;
     public float Speed => speed;
+
+    public float RefreshTime => refreshTime;
+    public float RefreshAmount => refreshAmount;
 
     public enum RANK
     {

@@ -4,24 +4,24 @@ using UnityEngine;
 /// <summary>
 /// 敵の手を管理するクラス
 /// </summary>
-public class PlayerHand : MonoBehaviour, IDamageble
+public class EnemyHand : MonoBehaviour, IDamageble
 {
     [SerializeField] GameObject taleDamageUI;
     [SerializeField] Transform handPos;
+    [Header("ステート管理"), SerializeField] EnemyStateController enemyState;
+    [Header("データ"), SerializeField] EnemyProfileSO enemyProfileSO;
 
-    [Header("ステート管理"), SerializeField] PlayerStateController playerState;
-
-    [Header("データ"), SerializeField] PlayerDataSO playerData;
-    [Header("アニメーション"), SerializeField] Animator handAnim;
-    [Header("UI"), SerializeField] HealthSlider healthSlider;
-    public StatusConst Status => playerData.Status;
+    [Header("UI")]
+    [SerializeField] HealthSlider healthSlider;
     float health;
     Coroutine cor_Refresh;
+    public StatusConst Status => enemyProfileSO.Status;
+    public float GetCurrentHealth() { return health; }
 
     void Awake()
     {
-        health = playerData.Status.Health;
-        healthSlider.HitSetHealthUI(health, playerData.Status.Health);
+        health = enemyProfileSO.Status.Health;
+        healthSlider.HitSetHealthUI(health, enemyProfileSO.Status.Health);
     }
 
     /// <summary>
@@ -29,16 +29,8 @@ public class PlayerHand : MonoBehaviour, IDamageble
     /// </summary>
     public void TakeDamage(float damage)
     {
-        // カウンター中だった場合
-        if (playerState.State == BattleState.Counter)
-        {
-            CombatCalculator.instance.PlayerToEnemyCounter();
-            playerState.StateChange(BattleState.Counter_Success);
-            return;
-        }
-
         health -= damage;
-        healthSlider.HitSetHealthUI(health, playerData.Status.Health);
+        healthSlider.HitSetHealthUI(health, enemyProfileSO.Status.Health);
 
         GameObject obj = Instantiate(taleDamageUI, handPos.position, Quaternion.identity, GameUIManager.instance.WorldCanvas);
         obj.GetComponent<TakeDamageUI>().SetDamageUI(damage);
@@ -47,15 +39,11 @@ public class PlayerHand : MonoBehaviour, IDamageble
         {
             Die();
         }
-        else
-        {
-            Hit();
-        }
     }
 
     public void Hit()
     {
-        playerState.StateChange(BattleState.Hit);
+
     }
 
     public void Die()
@@ -83,26 +71,26 @@ public class PlayerHand : MonoBehaviour, IDamageble
     IEnumerator RefreshFlow()
     {
         // 回復時間が0以下に設定されている場合は、何もせずに終了します。
-        if (playerData.RefreshTime <= 0f)
+        if (enemyProfileSO.Status.RefreshTime <= 0f)
         {
-            playerState.StateChange(BattleState.Idle);
+            enemyState.StatChange(BattleState.Idle);
             yield break;
         }
 
-        float healPerSecond = playerData.RefreshAmount / playerData.RefreshTime;
+        float healPerSecond = enemyProfileSO.Status.RefreshAmount / enemyProfileSO.Status.RefreshTime;
         float timer = 0f;
 
-        while (timer < playerData.RefreshTime)
+        while (timer < enemyProfileSO.Status.RefreshTime)
         {
             // 1秒あたりの回復量に基づいて体力を加算します。
             health += healPerSecond * Time.deltaTime;
-            health = Mathf.Clamp(health, 0, playerData.Status.Health);
-            healthSlider.RefreshSetHealthUI(health, playerData.Status.Health);
+            health = Mathf.Clamp(health, 0, enemyProfileSO.Status.Health);
+            healthSlider.RefreshSetHealthUI(health, enemyProfileSO.Status.Health);
 
             timer += Time.deltaTime;
             yield return null;
         }
 
-        playerState.StateChange(BattleState.Idle);
+        enemyState.StatChange(BattleState.Idle);
     }
 }

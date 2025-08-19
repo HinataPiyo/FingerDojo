@@ -207,8 +207,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handAnim: {fileID: 130995170}
-  timingBarCtrl: {fileID: 0}
-  cmd_TimingQTE: {fileID: 0}
+  timingBarCtrl: {fileID: 1900360604}
+  cmd_TimingQTE: {fileID: 1802032279}
   counterDuration: 0.5
 --- !u!1 &254627908
 GameObject:
@@ -261,7 +261,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   taleDamageUI: {fileID: 5282685873826585990, guid: 83f79e2e855f04b47bbb4e5590157656, type: 3}
   handPos: {fileID: 1586893061}
-  enemyData: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
+  enemyState: {fileID: 254627913}
+  enemyProfileSO: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
   healthSlider: {fileID: 1112884971}
 --- !u!95 &254627911
 Animator:
@@ -310,6 +311,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handAnim: {fileID: 254627911}
+  enemyHand: {fileID: 254627910}
 --- !u!114 &254627914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,10 +324,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79a13d1ece335994fb3fde8a354343bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyDataSO: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
-  behaviorProfile: {fileID: 11400000, guid: 9f3f62a1e7341fd47ab2bf0ec6b5572a, type: 2}
+  enemyProfile: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
   enemyState: {fileID: 254627913}
   playerState: {fileID: 130995171}
+  enemyHand: {fileID: 254627910}
 --- !u!1 &364898442
 GameObject:
   m_ObjectHideFlags: 0
