@@ -7,6 +7,7 @@ using UnityEngine;
 public class EnemyHand : MonoBehaviour, IDamageble
 {
     [SerializeField] GameObject taleDamageUI;
+    [SerializeField] GameObject effect_Hit;
     [SerializeField] Transform handPos;
     [Header("ステート管理"), SerializeField] EnemyStateController enemyState;
     [Header("データ"), SerializeField] EnemyProfileSO enemyProfile;
@@ -56,7 +57,8 @@ public class EnemyHand : MonoBehaviour, IDamageble
 
     public void Hit()
     {
-
+        Instantiate(effect_Hit, handPos.position, Quaternion.identity);     // Hitエフェクト
+        CameraShake.instance.Shake(0.2f, 1f, 5f);       // カメラシェイク
     }
 
     public void Die()
