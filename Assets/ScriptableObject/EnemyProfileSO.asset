@@ -22,8 +22,8 @@ MonoBehaviour:
     refreshAmount: 100
     refreshTime: 2
   idleTime: 3
-  reactiveCounterChance: 1
-  counterStateDuration: 2
+  reactiveCounterChance: 0.5
+  counterStateDuration: 1
   attackStateDuration: 1
   lowHealthRefreshThreshold: 0.1
   attackPlayerStates: 0100000002000000030000000500000006000000

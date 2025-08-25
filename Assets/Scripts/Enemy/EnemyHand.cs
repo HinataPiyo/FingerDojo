@@ -30,6 +30,7 @@ public class EnemyHand : MonoBehaviour, IDamageble
     public void TakeDamage(float damage)
     {
         // カウンター中だった場合
+        // 現 : カウンターは「指撃」ボタンが押された時に判定がとられる
         if (enemyState.State == BattleState.Counter)
         {
             CombatCalculator.instance.EnemyToPlayerCounter();
