@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class EnemyHand : MonoBehaviour, IDamageble
 {
-    [SerializeField] GameObject taleDamageUI;
+    [SerializeField] GameObject takeDamageUI;
     [SerializeField] GameObject effect_Hit;
     [SerializeField] Transform handPos;
     [Header("ステート管理"), SerializeField] EnemyStateController enemyState;
@@ -42,7 +42,7 @@ public class EnemyHand : MonoBehaviour, IDamageble
         health -= damage;
         healthSlider.HitSetHealthUI(health, enemyProfile.Status.Health);
 
-        GameObject obj = Instantiate(taleDamageUI, handPos.position, Quaternion.identity, GameUIManager.instance.WorldCanvas);
+        GameObject obj = Instantiate(takeDamageUI, handPos.position, Quaternion.identity, GameUIManager.instance.WorldCanvas);
         obj.GetComponent<TakeDamageUI>().SetDamageUI(damage);
 
         if (health <= 0)
@@ -57,6 +57,7 @@ public class EnemyHand : MonoBehaviour, IDamageble
 
     public void Hit()
     {
+        SoundManager.instance.PlaySE("hit");
         Instantiate(effect_Hit, handPos.position, Quaternion.identity);     // Hitエフェクト
         CameraShake.instance.Shake(0.2f, 1f, 5f);       // カメラシェイク
     }

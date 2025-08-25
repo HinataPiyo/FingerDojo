@@ -8,6 +8,7 @@ public class AttackCommandSO : CommandSO
         PlayerStateController playerState = executor.GetComponent<PlayerStateController>();
         if (playerState != null)
         {
+            SoundManager.instance.PlaySE("sigekibutton_click");
             playerState.StateChange(TargetState);
         }
     }

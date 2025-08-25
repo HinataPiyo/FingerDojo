@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 422bdf5270162f14090f3cec968ad856, type: 3}
+  m_Name: AudioListSO
+  m_EditorClassIdentifier: 
+  se:
+  - tag: counter_befor
+    clip: {fileID: 8300000, guid: 7c4dbe5685a47ba4980c6af8335b4efd, type: 3}
+  - tag: counter_success
+    clip: {fileID: 8300000, guid: 3308129c9d8946141abf9b9d5a86fbdb, type: 3}
+  - tag: hit
+    clip: {fileID: 8300000, guid: 3c905929079f6e046bceb557778e1231, type: 3}
+  - tag: sigekibutton_click
+    clip: {fileID: 8300000, guid: f7628495d4afaca4c8686849a9f6958d, type: 3}
+  bgm: []

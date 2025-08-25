@@ -6,9 +6,21 @@ using UnityEngine;
 public class EffectEvents : MonoBehaviour
 {
     [SerializeField] float delayDestroyTime = 0;
+    [SerializeField] bool isAwakeDeth = true;
 
     void Start()
     {
-        Destroy(gameObject, delayDestroyTime);
+        if (isAwakeDeth)
+        {
+            Destroy(gameObject, delayDestroyTime);
+        }
+    }
+
+    /// <summary>
+    /// 任意のタイミングで破棄
+    /// </summary>
+    public void EventDestroy()
+    {
+        Destroy(gameObject);
     }
 }

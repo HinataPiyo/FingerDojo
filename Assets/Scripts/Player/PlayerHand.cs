@@ -8,14 +8,22 @@ public class PlayerHand : MonoBehaviour, IDamageble
 {
     [SerializeField] GameObject taleDamageUI;
     [SerializeField] GameObject effect_Hit;
+    [Header("手の位置")]
     [SerializeField] Transform handPos;
-
+    [SerializeField] Transform handPos_Top;
+    [SerializeField] Transform counterPos;
+    [SerializeField] Transform refreshPos;
     [Header("ステート管理"), SerializeField] PlayerStateController playerState;
 
     [Header("データ"), SerializeField] PlayerDataSO playerData;
     [Header("アニメーション"), SerializeField] Animator handAnim;
     [Header("UI"), SerializeField] HealthSlider healthSlider;
     public StatusConst Status => playerData.Status;
+    public Transform HandPos => handPos;
+    public Transform HandPos_Top => handPos_Top;
+    public Transform CounterPos => counterPos;
+    public Transform RefreshPos => refreshPos;
+
     float health;
     Coroutine cor_Refresh;
 
@@ -56,6 +64,7 @@ public class PlayerHand : MonoBehaviour, IDamageble
 
     public void Hit()
     {
+        SoundManager.instance.PlaySE("hit");
         playerState.StateChange(BattleState.Hit);       // ステートチェンジ
         Instantiate(effect_Hit, handPos.position, Quaternion.identity);     // Hitエフェクト
         CameraShake.instance.Shake(0.2f, 1f, 5f);       // カメラシェイク
@@ -97,6 +106,13 @@ public class PlayerHand : MonoBehaviour, IDamageble
 
         while (timer < playerData.Status.RefreshTime)
         {
+            // 回復中にダメージを食らうとIdle状態に戻る
+            if (playerState.State == BattleState.Hit)
+            {
+                playerState.StateChange(BattleState.Refresh_End);
+                yield break;
+            }
+            
             // 1秒あたりの回復量に基づいて体力を加算します。
             health += healPerSecond * Time.deltaTime;
             health = Mathf.Clamp(health, 0, playerData.Status.Health);
@@ -106,6 +122,6 @@ public class PlayerHand : MonoBehaviour, IDamageble
             yield return null;
         }
 
-        playerState.StateChange(BattleState.Idle);
+        playerState.StateChange(BattleState.Refresh_End);
     }
 }

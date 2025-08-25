@@ -4,6 +4,10 @@ public class PlayerStateController : MonoBehaviour
 {
     [Header("アニメーション"), SerializeField] Animator handAnim;
     [Header("GameObjects"), SerializeField] TimingBarController timingBarCtrl;
+    [Header("Effect")]
+    [SerializeField] GameObject effect_Counter_Success;
+    [SerializeField] GameObject effect_Refresh;
+
     [SerializeField] CommandTimingQTE cmd_TimingQTE;
     [SerializeField] EnemyActionCounter enemyCounter;
 
@@ -12,6 +16,7 @@ public class PlayerStateController : MonoBehaviour
     PlayerHand playerHand;
     float _stateTime;
     bool stateEnter;
+    EffectEvents refresh_Event;     // リフレッシュのエフェクトのスクリプト
     public BattleState State { get; private set; } = BattleState.Idle;
 
     void Awake()
@@ -86,6 +91,7 @@ public class PlayerStateController : MonoBehaviour
             case BattleState.Counter:
                 if (stateEnter)
                 {
+                    SoundManager.instance.PlaySE("counter_befor");
                     GameUIManager.instance.SetCMDInteractable(false);
                     SetHandAnimation(BattleState.Counter);
                 }
@@ -95,6 +101,9 @@ public class PlayerStateController : MonoBehaviour
             case BattleState.Counter_Success:
                 if (stateEnter)
                 {
+                    SoundManager.instance.PlaySE("counter_success");
+                    GameManager.instance.StartMomentTime();     // 一瞬止める
+                    Instantiate(effect_Counter_Success, playerHand.CounterPos.position, Quaternion.identity);      // エフェクトを生成
                     SetHandAnimation(BattleState.Counter_Success);
                 }
 
@@ -110,11 +119,23 @@ public class PlayerStateController : MonoBehaviour
             case BattleState.Refresh:
                 if (stateEnter)
                 {
+                    refresh_Event = Instantiate(effect_Refresh, playerHand.RefreshPos.position, Quaternion.identity).GetComponent<EffectEvents>();
+
                     GameUIManager.instance.SetCMDInteractable(false);
                     playerHand.Refresh();
+                    SetHandAnimation(BattleState.Refresh);
                 }
 
                 break;
+            case BattleState.Refresh_End:
+                if (stateEnter)
+                {
+                    refresh_Event?.EventDestroy();       // 任意のタイミングでエフェクトを削除
+                    SetHandAnimation(BattleState.Refresh_End);
+                    StateChange(BattleState.Idle);
+                }
+
+            break;
             case BattleState.Skill:
                 if (stateEnter)
                 {
@@ -150,6 +171,12 @@ public class PlayerStateController : MonoBehaviour
                 break;
             case BattleState.Hit:
                 handAnim.SetTrigger("Hit");
+                break;
+            case BattleState.Refresh:
+                handAnim.SetBool("Refresh", true);
+                break;
+            case BattleState.Refresh_End:
+                handAnim.SetBool("Refresh", false);
                 break;
         }
     }

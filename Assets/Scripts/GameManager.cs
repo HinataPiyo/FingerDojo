@@ -1,0 +1,49 @@
+using System.Collections;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+    public static GameManager instance { get; private set; }
+
+    Coroutine cor_MomentTime;
+
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+    public void StartMomentTime()
+    {
+        if (cor_MomentTime != null)
+        {
+            StopCoroutine(cor_MomentTime);
+            cor_MomentTime = null;
+        }
+
+        cor_MomentTime = StartCoroutine(MomentTimeFlow());
+    }
+
+    IEnumerator MomentTimeFlow()
+    {
+        Time.timeScale = 0.1f;
+        float elapsed = 0.5f;
+        while (elapsed > 0)
+        {
+            elapsed -= Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        Time.timeScale = 1.0f;
+
+    }
+
+}
