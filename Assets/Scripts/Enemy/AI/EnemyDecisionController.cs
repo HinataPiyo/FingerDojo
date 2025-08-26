@@ -9,20 +9,14 @@ using UnityEngine;
 /// </summary>
 public class EnemyDecisionController : MonoBehaviour
 {
-    [Header("参照コンポーネント")]
-    [Tooltip("敵の個性やAIの賢さを定義するプロファイル")]
-    [SerializeField] EnemyProfileSO enemyProfile;
+    EnemyStateController enemyState;
+    EnemyHand enemyHand;
 
-    [Tooltip("敵のステートマシンを管理するコントローラー")]
-    [SerializeField] EnemyStateController enemyState;
-
-    [Tooltip("プレイヤーのステートマシンを管理するコントローラー")]
-    [SerializeField] PlayerStateController playerState;
-
-    [Tooltip("敵のHPや回復などを管理するコンポーネント")]
-    [SerializeField] EnemyHand enemyHand;
-    [SerializeField] EnemyActionCounter enemyCounter;
-
+    void Awake()
+    {
+        enemyState = GetComponent<EnemyStateController>();
+        enemyHand = GetComponent<EnemyHand>();
+    }
 
     void Start()
     {
@@ -37,7 +31,18 @@ public class EnemyDecisionController : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(enemyProfile.IdleTime);
+            // PlayerがAttack状態じゃなければ
+            if (GameManager.instance.PlayerHand.P_State != BattleState.Attack)
+            {
+                yield return new WaitForSeconds(enemyHand.E_Profile.IdleTime);
+            }
+            else    // Attack状態ならIdle間隔が短くなる
+            {
+                yield return new WaitForSeconds(enemyHand.E_Profile.IdleTime * 0.35f);
+            }
+
+            yield return new WaitUntil(() => enemyState.State != BattleState.Break);
+            yield return new WaitWhile(() => enemyState.State == BattleState.Refresh);
 
             DecideState();
         }
@@ -53,7 +58,7 @@ public class EnemyDecisionController : MonoBehaviour
         
         // --- 優先順位1: 緊急回復 ---
         // HPが閾値を下回っている場合、最優先で回復を試みる
-        if (enemyHand.GetCurrentHealth / enemyHand.Status.Health <= enemyProfile.LowHealthRefreshThreshold)
+        if (enemyHand.GetCurrentHealth / enemyHand.E_Profile.Status.Health <= enemyHand.E_Profile.LowHealthRefreshThreshold)
         {
             enemyState.StateChange(BattleState.Refresh);
             return;
@@ -64,17 +69,17 @@ public class EnemyDecisionController : MonoBehaviour
         var weights = new List<int>();
 
         // 攻撃可能か？
-        if (enemyProfile.AttackPlayerStates.Contains(playerState.State))
+        if (enemyHand.E_Profile.AttackPlayerStates.Contains(GameManager.instance.PlayerHand.P_State))
         {
             availableActions.Add(BattleState.Attack);
-            weights.Add(enemyProfile.AttackWeight);
+            weights.Add(enemyHand.E_Profile.AttackWeight);
         }
 
         // 回復（HPが満タンでなければ選択肢に入れる）
-        if (enemyHand.GetCurrentHealth < enemyHand.Status.Health)
+        if (enemyHand.GetCurrentHealth < enemyHand.E_Profile.Status.Health)
         {
             availableActions.Add(BattleState.Refresh);
-            weights.Add(enemyProfile.RefreshWeight);
+            weights.Add(enemyHand.E_Profile.RefreshWeight);
         }
 
         // 挑発（常に可能とする）

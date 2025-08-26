@@ -22,9 +22,11 @@ MonoBehaviour:
     refreshAmount: 100
     refreshTime: 2
   idleTime: 3
-  reactiveCounterChance: 0.5
-  counterStateDuration: 1
-  attackStateDuration: 1
+  reactiveCounterChance: 1
+  counterStateDuration: 0.5
+  attackStateDuration: 0.5
+  maxBreakCount: 3
+  breakTime: 3
   lowHealthRefreshThreshold: 0.1
   attackPlayerStates: 0100000002000000030000000500000006000000
   attackWeight: 70

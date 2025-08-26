@@ -8,6 +8,7 @@ public enum BattleState
     Hit,            // 被ダメージ
     Refresh,        // 休む中（無防備）
     Refresh_End,
+    Break,
     Skill,          // 技発動中
     Goad,        // ダメージ反映/怯み等
     BattleClear,    // 次Wave準備

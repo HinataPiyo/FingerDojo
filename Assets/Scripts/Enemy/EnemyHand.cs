@@ -8,19 +8,39 @@ public class EnemyHand : MonoBehaviour, IDamageble
 {
     [SerializeField] GameObject takeDamageUI;
     [SerializeField] GameObject effect_Hit;
+
+    [Header("Hand Position")]
     [SerializeField] Transform handPos;
-    [Header("ステート管理"), SerializeField] EnemyStateController enemyState;
-    [Header("データ"), SerializeField] EnemyProfileSO enemyProfile;
+    [SerializeField] Transform counterPos;
+    [SerializeField] Transform refreshPos;
+
+    [Header("Data")]
+    [SerializeField] EnemyProfileSO enemyProfile;
 
     [Header("UI")]
     [SerializeField] HealthSlider healthSlider;
+
+    
+    EnemyStateController enemyState;
+    EnemyActionBreak enemyActionBreak;
+    EnemyActionCounter enemyActionCounter;
     float health;
     Coroutine cor_Refresh;
-    public StatusConst Status => enemyProfile.Status;
+    public EnemyProfileSO E_Profile => enemyProfile;
     public float GetCurrentHealth => health;
+    public Transform CounterPos => counterPos;
+    public Transform RefreshPos => refreshPos;
+    public BattleState E_State => enemyState.State;
+    public EnemyActionCounter E_Counter => enemyActionCounter;
+    public System.Action ResetBreakCountUI => () => enemyActionBreak.ResetBreakCountUI();
+
 
     void Awake()
     {
+        enemyState = GetComponent<EnemyStateController>();
+        enemyActionBreak = GetComponent<EnemyActionBreak>();
+        enemyActionCounter = GetComponent<EnemyActionCounter>();
+
         health = enemyProfile.Status.Health;
         healthSlider.HitSetHealthUI(health, enemyProfile.Status.Health);
     }
@@ -30,6 +50,13 @@ public class EnemyHand : MonoBehaviour, IDamageble
     /// </summary>
     public void TakeDamage(float damage)
     {
+        Debug.Log("PlayerState : " + GameManager.instance.PlayerHand.P_State);
+        // Playerがカウンターしてきたら加算する
+        if (GameManager.instance.PlayerHand.P_State == BattleState.Counter)
+        {
+            enemyActionBreak.CheckBreak();      // ブレイク状態を更新する
+        }
+
         // カウンター中だった場合
         // 現 : カウンターは「指撃」ボタンが押された時に判定がとられる
         if (enemyState.State == BattleState.Counter)
@@ -98,6 +125,13 @@ public class EnemyHand : MonoBehaviour, IDamageble
 
         while (timer < enemyProfile.Status.RefreshTime)
         {
+            // 回復中にダメージを食らうとIdle状態に戻る
+            if (enemyState.State == BattleState.Hit)
+            {
+                enemyState.StateChange(BattleState.Refresh_End);
+                yield break;
+            }
+
             // 1秒あたりの回復量に基づいて体力を加算します。
             health += healPerSecond * Time.deltaTime;
             health = Mathf.Clamp(health, 0, enemyProfile.Status.Health);
@@ -107,6 +141,6 @@ public class EnemyHand : MonoBehaviour, IDamageble
             yield return null;
         }
 
-        enemyState.StateChange(BattleState.Idle);
+        enemyState.StateChange(BattleState.Refresh_End);
     }
 }

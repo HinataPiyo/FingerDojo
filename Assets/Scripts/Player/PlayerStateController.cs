@@ -9,7 +9,6 @@ public class PlayerStateController : MonoBehaviour
     [SerializeField] GameObject effect_Refresh;
 
     [SerializeField] CommandTimingQTE cmd_TimingQTE;
-    [SerializeField] EnemyActionCounter enemyCounter;
 
     [Header("Settings"), SerializeField] float counterDuration = 0.5f;
 
@@ -84,7 +83,12 @@ public class PlayerStateController : MonoBehaviour
                     timingBarCtrl.gameObject.SetActive(true);
                     cmd_TimingQTE.gameObject.SetActive(true);
 
-                    enemyCounter.CheckCounterAction();      // 敵がカウンターをするか判定
+                    GameManager.instance.EnemyHand.E_Counter.CheckCounterAction();      // 敵がカウンターをするか判定
+                }
+
+                if (playerHand.P_Data.AttackStateDuration > _stateTime)
+                {
+                    cmd_TimingQTE.EndTimingQTE();       // タイミングアクションを終了する
                 }
 
                 break;

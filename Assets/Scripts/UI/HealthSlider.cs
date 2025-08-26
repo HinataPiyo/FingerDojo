@@ -1,9 +1,11 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HealthSlider : MonoBehaviour
 {
+    [SerializeField] TextMeshProUGUI breakCount_Text;
     [SerializeField] Slider healthSlider;
     [SerializeField] Slider beforSlider;
 
@@ -57,5 +59,13 @@ public class HealthSlider : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    /// <summary>
+    /// ブレイク回数を更新
+    /// </summary>
+    public void SetBreakCount(int count)
+    {
+        breakCount_Text.text = count.ToString();
     }
 }

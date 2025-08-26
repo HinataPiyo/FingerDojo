@@ -5,7 +5,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
 
+    [SerializeField] PlayerHand playerHand;
+    [SerializeField] EnemyHand enemyHand;
+
     Coroutine cor_MomentTime;
+
+    public PlayerHand PlayerHand => playerHand;
+    public EnemyHand EnemyHand => enemyHand;
 
 
     void Awake()

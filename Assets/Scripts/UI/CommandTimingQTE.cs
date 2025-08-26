@@ -44,7 +44,7 @@ public class CommandTimingQTE : MonoBehaviour, IPointerDownHandler
     /// <summary>
     /// タイミングアクションが終了したときの処理
     /// </summary>
-    void EndTimingQTE()
+    public void EndTimingQTE()
     {
         gameObject.SetActive(false);
         playerState.StateChange(BattleState.Idle);

@@ -14,15 +14,16 @@ public class PlayerHand : MonoBehaviour, IDamageble
     [SerializeField] Transform counterPos;
     [SerializeField] Transform refreshPos;
     [Header("ステート管理"), SerializeField] PlayerStateController playerState;
-
     [Header("データ"), SerializeField] PlayerDataSO playerData;
     [Header("アニメーション"), SerializeField] Animator handAnim;
     [Header("UI"), SerializeField] HealthSlider healthSlider;
-    public StatusConst Status => playerData.Status;
+
+    public PlayerDataSO P_Data => playerData;
     public Transform HandPos => handPos;
     public Transform HandPos_Top => handPos_Top;
     public Transform CounterPos => counterPos;
     public Transform RefreshPos => refreshPos;
+    public BattleState P_State => playerState.State;
 
     float health;
     Coroutine cor_Refresh;

@@ -10,42 +10,46 @@ public class EnemyProfileSO : ScriptableObject
 {
     [Header("基本情報")]
     [Tooltip("敵の基本的なステータス（体力、攻撃力など）")]
-    [SerializeField] private StatusConst status;
+    [SerializeField] StatusConst status;
 
     [Tooltip("行動を選択するまでの待機時間")]
-    [SerializeField] private float idleTime = 2f;
+    [SerializeField] float idleTime = 2f;
 
     [Header("カウンター設定")]
     [Tooltip("プレイヤーの攻撃に反応してカウンターを試みる確率")]
-    [SerializeField, Range(0f, 1f)] private float reactiveCounterChance = 0.5f;
+    [SerializeField, Range(0f, 1f)] float reactiveCounterChance = 0.5f;
 
     [Tooltip("カウンター状態の持続時間（秒）")]
-    [SerializeField] private float counterStateDuration = 1f;
+    [SerializeField] float counterStateDuration = 1f;
     [Tooltip("攻撃状態の持続時間（秒）")]
-    [SerializeField] private float attackStateDuration = 1f;
+    [SerializeField] float attackStateDuration = 1f;
+
+    [Header("Breakの設定")]
+    [SerializeField] int maxBreakCount = 3;
+    [SerializeField] float breakTime = 3f;
 
     [Header("AIの賢さ（行動パターン）")]
     [Tooltip("HPがこの割合（0~1）以下になると、Refresh（回復）を優先的に選択する")]
-    [SerializeField, Range(0f, 1f)] private float lowHealthRefreshThreshold = 0.3f;
+    [SerializeField, Range(0f, 1f)] float lowHealthRefreshThreshold = 0.3f;
 
     [Tooltip("プレイヤーがこれらの状態の時に、攻撃を選択肢に入れる")]
-    [SerializeField] private List<BattleState> attackPlayerStates;
+    [SerializeField] List<BattleState> attackPlayerStates;
 
     [Header("アクションの選択重み")]
     [Tooltip("攻撃アクションの基本選択重み")]
-    [SerializeField, Range(1, 100)] private int attackWeight = 50;
+    [SerializeField, Range(1, 100)] int attackWeight = 50;
 
     [Tooltip("回復アクションの基本選択重み")]
-    [SerializeField, Range(1, 100)] private int refreshWeight = 50;
+    [SerializeField, Range(1, 100)] int refreshWeight = 50;
 
     [Tooltip("カウンターアクションの基本選択重み")]
-    [SerializeField, Range(1, 100)] private int counterWeight = 50;
+    [SerializeField, Range(1, 100)] int counterWeight = 50;
 
     [Tooltip("挑発アクションの基本選択重み")]
-    [SerializeField, Range(1, 100)] private int goadWeight = 20;
+    [SerializeField, Range(1, 100)] int goadWeight = 20;
 
     [Tooltip("スキルアクションの基本選択重み")]
-    [SerializeField, Range(1, 100)] private int skillWeight = 30;
+    [SerializeField, Range(1, 100)] int skillWeight = 30;
 
     // --- public properties ---
     public StatusConst Status => status;
@@ -55,6 +59,8 @@ public class EnemyProfileSO : ScriptableObject
     public float AttackStateDuration => attackStateDuration;
     public float LowHealthRefreshThreshold => lowHealthRefreshThreshold;
     public List<BattleState> AttackPlayerStates => attackPlayerStates;
+    public int MaxBreakCount => maxBreakCount;
+    public float BreakTime => breakTime;
     public int AttackWeight => attackWeight;
     public int RefreshWeight => refreshWeight;
     public int CounterWeight => counterWeight;

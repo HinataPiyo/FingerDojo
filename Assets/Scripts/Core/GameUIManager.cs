@@ -10,6 +10,7 @@ public class GameUIManager : MonoBehaviour
     [Header("WorldCanvas"), SerializeField] Transform worldCanvas;
 
     [SerializeField] Button[] cmd_Buttons;
+    [SerializeField] CommandTimingQTE cmd_TimingQTE;
 
     public Transform WorldCanvas => worldCanvas;
 
@@ -33,6 +34,5 @@ public class GameUIManager : MonoBehaviour
             b.interactable = interactable;
         }
     }
-
 
 }

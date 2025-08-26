@@ -25,7 +25,7 @@ public class CombatCalculator : MonoBehaviour
     /// <param name="power"></param>
     public void PlayerToEnemyAttack(float power)
     {
-        enemyHand.TakeDamage(playerHand.Status.Strength * power);
+        enemyHand.TakeDamage(playerHand.P_Data.Status.Strength * power);
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public class CombatCalculator : MonoBehaviour
     /// <param name="power"></param>
     public void EnemyToPlayerAttack(float power)
     {
-        playerHand.TakeDamage(enemyHand.Status.Strength * power);
+        playerHand.TakeDamage(enemyHand.E_Profile.Status.Strength * power);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class CombatCalculator : MonoBehaviour
     /// </summary>
     public void PlayerToEnemyCounter()
     {
-        enemyHand.TakeDamage(playerHand.Status.Strength * 0.25f);
+        enemyHand.TakeDamage(playerHand.P_Data.Status.Strength * 0.25f);
     }
 
     /// <summary>
@@ -50,6 +50,6 @@ public class CombatCalculator : MonoBehaviour
     /// </summary>
     public void EnemyToPlayerCounter()
     {
-        playerHand.TakeDamage(enemyHand.Status.Strength * 0.25f);
+        playerHand.TakeDamage(enemyHand.E_Profile.Status.Strength * 0.25f);
     }
 }
