@@ -31,14 +31,15 @@ public class EnemyDecisionController : MonoBehaviour
     {
         while (true)
         {
-            // PlayerがAttack状態じゃなければ
-            if (GameManager.instance.PlayerHand.P_State != BattleState.Attack)
-            {
-                yield return new WaitForSeconds(enemyHand.E_Profile.IdleTime);
-            }
-            else    // Attack状態ならIdle間隔が短くなる
+            if (GameManager.instance.PlayerHand.P_State == BattleState.Attack
+            || GameManager.instance.PlayerHand.P_State == BattleState.Goad
+            || GameManager.instance.PlayerHand.P_State == BattleState.Break)
             {
                 yield return new WaitForSeconds(enemyHand.E_Profile.IdleTime * 0.35f);
+            }
+            else
+            {
+                yield return new WaitForSeconds(enemyHand.E_Profile.IdleTime);
             }
 
             yield return new WaitUntil(() => enemyState.State != BattleState.Break);
@@ -68,12 +69,9 @@ public class EnemyDecisionController : MonoBehaviour
         var availableActions = new List<BattleState>();
         var weights = new List<int>();
 
-        // 攻撃可能か？
-        if (enemyHand.E_Profile.AttackPlayerStates.Contains(GameManager.instance.PlayerHand.P_State))
-        {
-            availableActions.Add(BattleState.Attack);
-            weights.Add(enemyHand.E_Profile.AttackWeight);
-        }
+        // 攻撃は常に追加
+        availableActions.Add(BattleState.Attack);
+        weights.Add(enemyHand.E_Profile.AttackWeight);
 
         // 回復（HPが満タンでなければ選択肢に入れる）
         if (enemyHand.GetCurrentHealth < enemyHand.E_Profile.Status.Health)

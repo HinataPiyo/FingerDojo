@@ -50,7 +50,6 @@ public class EnemyHand : MonoBehaviour, IDamageble
     /// </summary>
     public void TakeDamage(float damage)
     {
-        Debug.Log("PlayerState : " + GameManager.instance.PlayerHand.P_State);
         // Playerがカウンターしてきたら加算する
         if (GameManager.instance.PlayerHand.P_State == BattleState.Counter)
         {
@@ -126,7 +125,7 @@ public class EnemyHand : MonoBehaviour, IDamageble
         while (timer < enemyProfile.Status.RefreshTime)
         {
             // 回復中にダメージを食らうとIdle状態に戻る
-            if (enemyState.State == BattleState.Hit)
+            if (enemyState.State == BattleState.Hit || enemyState.State == BattleState.Break)
             {
                 enemyState.StateChange(BattleState.Refresh_End);
                 yield break;

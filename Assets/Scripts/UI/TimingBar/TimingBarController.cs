@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class TimingBarController : MonoBehaviour
 {
+    [SerializeField] PlayerStateController playerState;
     [SerializeField] Slider timingSlider;
     [SerializeField] float power = 2f;     // 2=QuadIn, 3=CubicIn など
     static readonly float BarPosDuration = 1f;
@@ -62,6 +63,7 @@ public class TimingBarController : MonoBehaviour
     IEnumerator DecideTimingQTE(System.Action endAction)
     {
         isClick = true;
+        playerState.AttackImpactAnimation();        // アニメーションを再生
 
         float elapsed = DispTimingbarTime;
         while (elapsed > 0)

@@ -21,3 +21,6 @@ MonoBehaviour:
     speed: 1
     refreshAmount: 70
     refreshTime: 2
+    maxBreakCount: 1
+    breakTime: 3
+  attackStateDuration: 3

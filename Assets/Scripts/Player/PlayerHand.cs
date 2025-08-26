@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -16,7 +17,9 @@ public class PlayerHand : MonoBehaviour, IDamageble
     [Header("ステート管理"), SerializeField] PlayerStateController playerState;
     [Header("データ"), SerializeField] PlayerDataSO playerData;
     [Header("アニメーション"), SerializeField] Animator handAnim;
-    [Header("UI"), SerializeField] HealthSlider healthSlider;
+    [Header("UI")]
+    [SerializeField] HealthSlider healthSlider;
+    [SerializeField] TextMeshProUGUI breakCount_Text;
 
     public PlayerDataSO P_Data => playerData;
     public Transform HandPos => handPos;
@@ -26,12 +29,14 @@ public class PlayerHand : MonoBehaviour, IDamageble
     public BattleState P_State => playerState.State;
 
     float health;
+    int nowBreakCount;
     Coroutine cor_Refresh;
 
     void Awake()
     {
         health = playerData.Status.Health;
         healthSlider.HitSetHealthUI(health, playerData.Status.Health);
+        ResetBreakCountUI();
     }
 
     /// <summary>
@@ -39,6 +44,8 @@ public class PlayerHand : MonoBehaviour, IDamageble
     /// </summary>
     public void TakeDamage(float damage)
     {
+        CheckBreak();       // PlayerがBreakするか確認
+
         // カウンター中だった場合
         if (playerState.State == BattleState.Counter)
         {
@@ -66,7 +73,11 @@ public class PlayerHand : MonoBehaviour, IDamageble
     public void Hit()
     {
         SoundManager.instance.PlaySE("hit");
-        playerState.StateChange(BattleState.Hit);       // ステートチェンジ
+        // ブレイク中はアニメーションを再生しない & Attack中はアニメーションを再生しない
+        if (P_State != BattleState.Break && P_State != BattleState.Attack)
+        {
+            playerState.StateChange(BattleState.Hit);       // ステートチェンジ
+        }
         Instantiate(effect_Hit, handPos.position, Quaternion.identity);     // Hitエフェクト
         CameraShake.instance.Shake(0.2f, 1f, 5f);       // カメラシェイク
     }
@@ -113,7 +124,7 @@ public class PlayerHand : MonoBehaviour, IDamageble
                 playerState.StateChange(BattleState.Refresh_End);
                 yield break;
             }
-            
+
             // 1秒あたりの回復量に基づいて体力を加算します。
             health += healPerSecond * Time.deltaTime;
             health = Mathf.Clamp(health, 0, playerData.Status.Health);
@@ -124,5 +135,34 @@ public class PlayerHand : MonoBehaviour, IDamageble
         }
 
         playerState.StateChange(BattleState.Refresh_End);
+    }
+
+    /// <summary>
+    /// PlayerがBreakするか確認
+    /// </summary>
+    void CheckBreak()
+    {
+        if (GameManager.instance.EnemyHand.E_State == BattleState.Counter)
+        {
+            if (P_State == BattleState.Break) return;
+
+            nowBreakCount++;
+            breakCount_Text.text = (playerData.Status.MaxBreakCount - nowBreakCount).ToString();
+
+            if (playerData.Status.MaxBreakCount == nowBreakCount)
+            {
+                playerState.StateChange(BattleState.Break);
+                nowBreakCount = 0;
+                breakCount_Text.text = "0";
+            }
+        }
+    }
+
+    /// <summary>
+    /// Break回数のUIを初期化
+    /// </summary>
+    public void ResetBreakCountUI()
+    {
+        breakCount_Text.text = playerData.Status.MaxBreakCount.ToString();
     }
 }

@@ -24,16 +24,9 @@ public class EnemyProfileSO : ScriptableObject
     [Tooltip("攻撃状態の持続時間（秒）")]
     [SerializeField] float attackStateDuration = 1f;
 
-    [Header("Breakの設定")]
-    [SerializeField] int maxBreakCount = 3;
-    [SerializeField] float breakTime = 3f;
-
     [Header("AIの賢さ（行動パターン）")]
     [Tooltip("HPがこの割合（0~1）以下になると、Refresh（回復）を優先的に選択する")]
     [SerializeField, Range(0f, 1f)] float lowHealthRefreshThreshold = 0.3f;
-
-    [Tooltip("プレイヤーがこれらの状態の時に、攻撃を選択肢に入れる")]
-    [SerializeField] List<BattleState> attackPlayerStates;
 
     [Header("アクションの選択重み")]
     [Tooltip("攻撃アクションの基本選択重み")]
@@ -58,9 +51,6 @@ public class EnemyProfileSO : ScriptableObject
     public float CounterStateDuration => counterStateDuration;
     public float AttackStateDuration => attackStateDuration;
     public float LowHealthRefreshThreshold => lowHealthRefreshThreshold;
-    public List<BattleState> AttackPlayerStates => attackPlayerStates;
-    public int MaxBreakCount => maxBreakCount;
-    public float BreakTime => breakTime;
     public int AttackWeight => attackWeight;
     public int RefreshWeight => refreshWeight;
     public int CounterWeight => counterWeight;

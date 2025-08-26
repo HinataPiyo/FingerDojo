@@ -29,7 +29,7 @@ public class PlayerStateController : MonoBehaviour
     /// </summary>
     void Initialize()
     {
-        
+
     }
 
     void LateUpdate()
@@ -38,6 +38,8 @@ public class PlayerStateController : MonoBehaviour
         {
             stateEnter = false;
         }
+
+        Debug.Log("PlayerState : " + State.ToString());
     }
 
     /// <summary>
@@ -71,6 +73,9 @@ public class PlayerStateController : MonoBehaviour
                 {
                     // コマンドボタンを押せる状態にする
                     GameUIManager.instance.SetCMDInteractable(true);
+                    SetHandAnimation(BattleState.Refresh_End);
+
+                    SetHandAnimation(BattleState.Idle);
                 }
 
                 break;
@@ -86,11 +91,6 @@ public class PlayerStateController : MonoBehaviour
                     GameManager.instance.EnemyHand.E_Counter.CheckCounterAction();      // 敵がカウンターをするか判定
                 }
 
-                if (playerHand.P_Data.AttackStateDuration > _stateTime)
-                {
-                    cmd_TimingQTE.EndTimingQTE();       // タイミングアクションを終了する
-                }
-
                 break;
             case BattleState.Counter:
                 if (stateEnter)
@@ -100,7 +100,10 @@ public class PlayerStateController : MonoBehaviour
                     SetHandAnimation(BattleState.Counter);
                 }
                 // counterDurationの間 CMD UI は非アクティブ
-                if (_stateTime > counterDuration) StateChange(BattleState.Idle);
+                if (_stateTime > counterDuration && State != BattleState.Counter_Success)
+                {
+                    StateChange(BattleState.Idle);
+                }
                 break;
             case BattleState.Counter_Success:
                 if (stateEnter)
@@ -111,14 +114,18 @@ public class PlayerStateController : MonoBehaviour
                     SetHandAnimation(BattleState.Counter_Success);
                 }
 
-                if(_stateTime > 0.5) StateChange(BattleState.Idle);
+                if (_stateTime > 0.5) StateChange(BattleState.Idle);
                 break;
             case BattleState.Hit:
                 if (stateEnter)
                 {
                     SetHandAnimation(BattleState.Hit);
                 }
-                if(_stateTime > 0.25) StateChange(BattleState.Idle);
+
+                if (_stateTime > 0.25)
+                {
+                    StateChange(BattleState.Idle);
+                }
                 break;
             case BattleState.Refresh:
                 if (stateEnter)
@@ -135,11 +142,25 @@ public class PlayerStateController : MonoBehaviour
                 if (stateEnter)
                 {
                     refresh_Event?.EventDestroy();       // 任意のタイミングでエフェクトを削除
-                    SetHandAnimation(BattleState.Refresh_End);
                     StateChange(BattleState.Idle);
                 }
 
-            break;
+                break;
+            case BattleState.Break:
+                if (stateEnter)
+                {
+                    GameUIManager.instance.SetCMDInteractable(false);       // UIを触れなくする
+                    SetHandAnimation(BattleState.Break);
+                }
+                // 設定したブレイク時間が過ぎればIdleに戻る
+                if (_stateTime > playerHand.P_Data.Status.BreakTime)
+                {
+                    Debug.Log("Break End!!");
+                    playerHand.ResetBreakCountUI();     // テキストを初期化
+                    handAnim.SetBool("Break", false);
+                    StateChange(BattleState.Idle);
+                }
+                break;
             case BattleState.Skill:
                 if (stateEnter)
                 {
@@ -156,7 +177,7 @@ public class PlayerStateController : MonoBehaviour
                 break;
         }
     }
-    
+
     /// <summary>
     /// アニメーションを再生する
     /// </summary>
@@ -165,7 +186,7 @@ public class PlayerStateController : MonoBehaviour
         switch (state)
         {
             case BattleState.Attack:
-                handAnim.SetTrigger("Attack");
+                handAnim.SetBool("Attack", true);
                 break;
             case BattleState.Counter:
                 handAnim.SetTrigger("Counter");
@@ -182,6 +203,14 @@ public class PlayerStateController : MonoBehaviour
             case BattleState.Refresh_End:
                 handAnim.SetBool("Refresh", false);
                 break;
+            case BattleState.Break:
+                handAnim.SetBool("Break", true);
+                break;
         }
+    }
+
+    public void AttackImpactAnimation()
+    {
+        handAnim.SetBool("Attack", false);
     }
 }

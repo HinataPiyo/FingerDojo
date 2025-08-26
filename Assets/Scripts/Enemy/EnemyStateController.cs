@@ -109,7 +109,12 @@ public class EnemyStateController : MonoBehaviour
                 if (stateEnter)
                 {
                     refresh_Event?.EventDestroy();       // 任意のタイミングでエフェクトを削除
-                    StateChange(BattleState.Idle);
+
+                    // ブレイク中はステートを切り替えない
+                    if (State != BattleState.Break)
+                    {
+                        StateChange(BattleState.Idle);
+                    }
                 }
                 break;
             case BattleState.Break:
@@ -118,7 +123,7 @@ public class EnemyStateController : MonoBehaviour
                     SetHandAnimation(BattleState.Break);
                 }
                 // 設定したブレイク時間が過ぎればIdleに戻る
-                if (_stateTime > enemyHand.E_Profile.BreakTime)
+                if (_stateTime > enemyHand.E_Profile.Status.BreakTime)
                 {
                     enemyHand.ResetBreakCountUI.Invoke();
                     StateChange(BattleState.Idle);

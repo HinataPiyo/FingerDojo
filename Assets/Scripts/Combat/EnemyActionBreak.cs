@@ -20,10 +20,10 @@ public class EnemyActionBreak : MonoBehaviour
         if (enemyStateCtrl.State == BattleState.Break) return;
 
         nowCounterCount++;
-        healthSlider.SetBreakCount(enemyHand.E_Profile.MaxBreakCount - nowCounterCount);
+        healthSlider.SetBreakCount(enemyHand.E_Profile.Status.MaxBreakCount - nowCounterCount);
 
         // 最大カウント数を超えていたら
-        if (enemyHand.E_Profile.MaxBreakCount == nowCounterCount)
+        if (enemyHand.E_Profile.Status.MaxBreakCount == nowCounterCount)
         {
             Break();        // Breakする
         }
@@ -45,6 +45,6 @@ public class EnemyActionBreak : MonoBehaviour
     /// </summary>
     public void ResetBreakCountUI()
     {
-        healthSlider.SetBreakCount(enemyHand.E_Profile.MaxBreakCount);
+        healthSlider.SetBreakCount(enemyHand.E_Profile.Status.MaxBreakCount);
     }
 }

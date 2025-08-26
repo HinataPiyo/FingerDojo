@@ -5,7 +5,5 @@ using UnityEngine;
 public class PlayerDataSO : ScriptableObject
 {
     [SerializeField] StatusConst status;
-    [SerializeField] float attackStateDuration;
     public StatusConst Status => status;
-    public float AttackStateDuration => attackStateDuration;
 }

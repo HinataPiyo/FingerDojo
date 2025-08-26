@@ -14,6 +14,10 @@ public class StatusConst
     [SerializeField, Tooltip("休息コマンドで回復する総量")] float refreshAmount;
     [SerializeField, Tooltip("休息コマンドで回復する時間")] float refreshTime;
 
+    [Header("Breakの設定")]
+    [SerializeField] int maxBreakCount = 3;
+    [SerializeField] float breakTime = 3f;
+
     public string Name => name;
     public RANK Rank => rank;
     public float Health => health;
@@ -23,6 +27,9 @@ public class StatusConst
 
     public float RefreshTime => refreshTime;
     public float RefreshAmount => refreshAmount;
+
+    public int MaxBreakCount => maxBreakCount;
+    public float BreakTime => breakTime;
 
     public enum RANK
     {
