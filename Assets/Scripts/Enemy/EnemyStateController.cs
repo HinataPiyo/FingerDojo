@@ -53,6 +53,8 @@ public class EnemyStateController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.instance.isGameEnd) return;
+        
         _stateTime += Time.deltaTime;
 
         switch (State)
@@ -62,7 +64,7 @@ public class EnemyStateController : MonoBehaviour
             case BattleState.Idle:
                 if (stateEnter)
                 {
-                    handAnim.SetBool("Counter", false);
+                    handAnim.SetBool("Counter_Success", false);
                     handAnim.SetBool("Break", false);
                     SetHandAnimation(BattleState.Refresh_End);
                 }
@@ -90,6 +92,7 @@ public class EnemyStateController : MonoBehaviour
             case BattleState.Counter_Success:
                 if (stateEnter)
                 {
+                    GameUIManager.instance.ActiveCounterText();     // カウンターテキストをアクティブ化
                     SoundManager.instance.PlaySE("counter_success");
                     GameManager.instance.StartMomentTime();     // 一瞬止める
                     Instantiate(effect_Counter_Success, enemyHand.CounterPos.position, Quaternion.identity);      // エフェクトを生成
@@ -155,10 +158,10 @@ public class EnemyStateController : MonoBehaviour
                 handAnim.SetTrigger("Attack");
                 break;
             case BattleState.Counter:
-                handAnim.SetBool("Counter", true);
+                handAnim.SetTrigger("Counter");
                 break;
             case BattleState.Counter_Success:
-                handAnim.SetTrigger("Counter_Success");
+                handAnim.SetBool("Counter_Success", true);
                 break;
             case BattleState.Refresh:
                 handAnim.SetBool("Refresh", true);

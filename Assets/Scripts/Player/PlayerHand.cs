@@ -82,9 +82,12 @@ public class PlayerHand : MonoBehaviour, IDamageble
         CameraShake.instance.Shake(0.2f, 1f, 5f);       // カメラシェイク
     }
 
+    /// <summary>
+    /// 死亡時の処理
+    /// </summary>
     public void Die()
     {
-
+        GameManager.instance.GameOver();
     }
 
     /// <summary>

@@ -19,7 +19,6 @@ public class EnemyHand : MonoBehaviour, IDamageble
 
     [Header("UI")]
     [SerializeField] HealthSlider healthSlider;
-
     
     EnemyStateController enemyState;
     EnemyActionBreak enemyActionBreak;
@@ -40,7 +39,19 @@ public class EnemyHand : MonoBehaviour, IDamageble
         enemyState = GetComponent<EnemyStateController>();
         enemyActionBreak = GetComponent<EnemyActionBreak>();
         enemyActionCounter = GetComponent<EnemyActionCounter>();
+    }
 
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
+    public void Initialize(EenmyDifficultyListSO.Data data)
+    {
+        if (data != null)
+        {   
+            enemyProfile = data.profileSO;       // Titleで設定した難易度ごとのSOを設定
+        }
+
+        // 体力を設定
         health = enemyProfile.Status.Health;
         healthSlider.HitSetHealthUI(health, enemyProfile.Status.Health);
     }
@@ -88,9 +99,12 @@ public class EnemyHand : MonoBehaviour, IDamageble
         CameraShake.instance.Shake(0.2f, 1f, 5f);       // カメラシェイク
     }
 
+    /// <summary>
+    /// 死亡時の処理
+    /// </summary>
     public void Die()
     {
-
+        GameManager.instance.GameClear();
     }
 
     /// <summary>

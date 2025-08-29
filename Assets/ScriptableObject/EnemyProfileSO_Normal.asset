@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 398b64685d40c394aa6d471950f5ea4c, type: 3}
-  m_Name: EnemyProfileSO
+  m_Name: EnemyProfileSO_Normal
   m_EditorClassIdentifier: 
   status:
     name: "\u30A8\u30CD\u30DF\u30FC"
@@ -27,7 +27,7 @@ MonoBehaviour:
   reactiveCounterChance: 1
   counterStateDuration: 0.5
   attackStateDuration: 0.5
-  lowHealthRefreshThreshold: 0.1
+  lowHealthRefreshThreshold: 0
   attackWeight: 80
   refreshWeight: 20
   counterWeight: 50

@@ -62,6 +62,7 @@ public class PlayerStateController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.instance.isGameEnd) return;
         _stateTime += Time.deltaTime;
 
         switch (State)
@@ -108,6 +109,7 @@ public class PlayerStateController : MonoBehaviour
             case BattleState.Counter_Success:
                 if (stateEnter)
                 {
+                    GameUIManager.instance.ActiveCounterText();
                     SoundManager.instance.PlaySE("counter_success");
                     GameManager.instance.StartMomentTime();     // 一瞬止める
                     Instantiate(effect_Counter_Success, playerHand.CounterPos.position, Quaternion.identity);      // エフェクトを生成

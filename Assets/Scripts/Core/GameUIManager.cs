@@ -10,8 +10,12 @@ public class GameUIManager : MonoBehaviour
     [Header("WorldCanvas"), SerializeField] Transform worldCanvas;
 
     [SerializeField] Button[] cmd_Buttons;
-    [SerializeField] CommandTimingQTE cmd_TimingQTE;
+    [SerializeField] GameObject counterText;
 
+    [Header("Win or Lose Panel")]
+    [SerializeField] Canvas win_Lose_Canvas;
+    [SerializeField] GameObject winPanel;
+    [SerializeField] GameObject losePanel;
     public Transform WorldCanvas => worldCanvas;
 
     void Awake()
@@ -22,6 +26,10 @@ public class GameUIManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        win_Lose_Canvas.enabled = false;
+        winPanel.SetActive(false);
+        losePanel.SetActive(false);
     }
 
     /// <summary>
@@ -33,6 +41,34 @@ public class GameUIManager : MonoBehaviour
         {
             b.interactable = interactable;
         }
+    }
+
+    /// <summary>
+    /// カウンターテキストをアクティブ化する
+    /// </summary>
+    public void ActiveCounterText()
+    {
+        // もしすでにAcriveなら一度非アクティブにする
+        if (counterText.activeSelf == true)
+        {
+            counterText.SetActive(false);
+        }
+
+        counterText.SetActive(true);
+    }
+
+    public void GameClear()
+    {
+        win_Lose_Canvas.enabled = true;
+        winPanel.SetActive(true);
+        losePanel.SetActive(false);
+    }
+
+    public void GameOver()
+    {
+        win_Lose_Canvas.enabled = true;
+        winPanel.SetActive(false);
+        losePanel.SetActive(true);
     }
 
 }

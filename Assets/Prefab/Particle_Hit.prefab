@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayDestroyTime: 2
+  isAwakeDeth: 1
 --- !u!1 &6089801661799277717
 GameObject:
   m_ObjectHideFlags: 0
@@ -1422,7 +1423,7 @@ ParticleSystem:
       maxGradient:
         serializedVersion: 2
         key0: {r: 0.084745884, g: 0, b: 1, a: 1}
-        key1: {r: 0.52201253, g: 0.13953155, b: 0.40616676, a: 0}
+        key1: {r: 0.99334383, g: 1, b: 0, a: 0}
         key2: {r: 0.72955966, g: 0.021613438, b: 0, a: 1}
         key3: {r: 0.3018868, g: 0, b: 0.27545297, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 1}

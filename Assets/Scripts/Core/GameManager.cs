@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public PlayerHand PlayerHand => playerHand;
     public EnemyHand EnemyHand => enemyHand;
 
+    public bool isGameEnd { get; private set;}
+
 
     void Awake()
     {
@@ -25,6 +27,9 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        // 敵データの初期化処理
+        enemyHand.Initialize(TitleUIManager.instance?.SelectEnemyData);
     }
 
     public void StartMomentTime()
@@ -52,4 +57,21 @@ public class GameManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// GameOver処理
+    /// </summary>
+    public void GameOver()
+    {
+        isGameEnd = true;
+        GameUIManager.instance?.GameOver();
+    }
+
+    /// <summary>
+    /// GameClear処理
+    /// </summary>
+    public void GameClear()
+    {
+        isGameEnd = true;
+        GameUIManager.instance?.GameClear();
+    }
 }

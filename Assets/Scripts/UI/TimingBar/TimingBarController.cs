@@ -7,8 +7,22 @@ public class TimingBarController : MonoBehaviour
     [SerializeField] PlayerStateController playerState;
     [SerializeField] Slider timingSlider;
     [SerializeField] float power = 2f;     // 2=QuadIn, 3=CubicIn など
+
+    [Header("TimingText")]
+    [SerializeField] GameObject parfectTimingText;
+    [SerializeField] GameObject greatTimingText;
+    [SerializeField] GameObject goodTimingText;
+    [SerializeField] GameObject badTimingText;
+
     static readonly float BarPosDuration = 1f;
     static readonly float DispTimingbarTime = 0.5f;       // QTE決定後バーの表示時間
+
+    /// <summary>
+    /// タイミングの判定定数
+    /// </summary>
+    static readonly float ParfectTiming = 0.98f;
+    static readonly float GreatTiming = 0.5f;
+    static readonly float GoodTiming = 0.3f;
 
     float currentPositionX;         // バーの現在の位置 (-1 ~ 1)
 
@@ -120,4 +134,26 @@ public class TimingBarController : MonoBehaviour
         timingSlider.value = currentPositionX;
     }
 
+    /// <summary>
+    /// タイミングを判定したときにテキストを表示させる
+    /// </summary>
+    public void TimingJudgeText()
+    {
+        if (currentPositionX >= ParfectTiming)
+        {
+            parfectTimingText.SetActive(true);
+        }
+        else if (currentPositionX >= GreatTiming)
+        {
+            greatTimingText.SetActive(true);
+        }
+        else if (currentPositionX >= GoodTiming)
+        {
+            goodTimingText.SetActive(true);
+        }
+        else
+        {
+            badTimingText.SetActive(true);
+        }
+    }
 }

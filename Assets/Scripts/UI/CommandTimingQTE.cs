@@ -36,6 +36,7 @@ public class CommandTimingQTE : MonoBehaviour, IPointerDownHandler
         if (button.interactable == false) return;
 
         CombatCalculator.instance.PlayerToEnemyAttack(timingBarCtrl.CheckTiming());
+        timingBarCtrl.TimingJudgeText();          // タイミングを判定したときにテキストを表示させる
         // タイミングアクション決定時、コルーチン開始
         timingBarCtrl.CorDecideTimingQTE(() => EndTimingQTE());
         button.interactable = false;

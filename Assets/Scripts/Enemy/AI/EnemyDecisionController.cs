@@ -45,6 +45,7 @@ public class EnemyDecisionController : MonoBehaviour
             yield return new WaitUntil(() => enemyState.State != BattleState.Break);
             yield return new WaitWhile(() => enemyState.State == BattleState.Refresh);
 
+            if (GameManager.instance.isGameEnd) yield break;
             DecideState();
         }
     }
@@ -91,6 +92,12 @@ public class EnemyDecisionController : MonoBehaviour
         // --- 重み付けランダム選択 ---
         if (availableActions.Count > 0)
         {
+            // 念のため、回復中ならこの処理を抜ける
+            if (enemyState.State == BattleState.Refresh)
+            {
+                return;
+            }
+
             enemyState.StateChange(GetWeightedRandomAction(availableActions, weights));
         }
     }
