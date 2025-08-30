@@ -84,7 +84,7 @@ public class EnemyStateController : MonoBehaviour
                     SetHandAnimation(BattleState.Counter);
                 }
                 // カウンターの持続時間が過ぎればIdleに戻る
-                if (_stateTime > enemyHand.E_Profile.CounterStateDuration)
+                if (_stateTime > enemyHand.E_Profile.Status.CounterStateDuration)
                 {
                     StateChange(BattleState.Idle);
                 }
@@ -98,7 +98,7 @@ public class EnemyStateController : MonoBehaviour
                     Instantiate(effect_Counter_Success, enemyHand.CounterPos.position, Quaternion.identity);      // エフェクトを生成
                     SetHandAnimation(BattleState.Counter_Success);
                 }
-                if (_stateTime > enemyHand.E_Profile.CounterStateDuration) StateChange(BattleState.Idle);
+                if (_stateTime > enemyHand.E_Profile.Status.CounterStateDuration) StateChange(BattleState.Idle);
                 break;
             case BattleState.Refresh:
                 if (stateEnter)

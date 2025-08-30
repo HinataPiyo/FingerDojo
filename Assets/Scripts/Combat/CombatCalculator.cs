@@ -7,7 +7,7 @@ public class CombatCalculator : MonoBehaviour
 {
     public static CombatCalculator instance { get; private set; }
     [SerializeField] EnemyHand enemyHand;
-    [SerializeField] PlayerHand playerHand;
+    [SerializeField] PlayerHealth playerHand;
 
     void Awake()
     {

@@ -44,7 +44,7 @@ public class EnemyActionCounter : MonoBehaviour
         while (startTime > 0)
         {
             // startTimeより早くにPlayerがAttackしてきたらIdleに戻る
-            if (GameManager.instance.PlayerHand.P_State != BattleState.Attack)
+            if (GameManager.instance.PlayerHealth.P_State != BattleState.Attack)
             {
                 enemyState.StateChange(BattleState.Idle);
                 yield break;

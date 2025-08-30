@@ -31,9 +31,9 @@ public class EnemyDecisionController : MonoBehaviour
     {
         while (true)
         {
-            if (GameManager.instance.PlayerHand.P_State == BattleState.Attack
-            || GameManager.instance.PlayerHand.P_State == BattleState.Goad
-            || GameManager.instance.PlayerHand.P_State == BattleState.Break)
+            if (GameManager.instance.PlayerHealth.P_State == BattleState.Attack
+            || GameManager.instance.PlayerHealth.P_State == BattleState.Goad
+            || GameManager.instance.PlayerHealth.P_State == BattleState.Break)
             {
                 yield return new WaitForSeconds(enemyHand.E_Profile.IdleTime * 0.35f);
             }

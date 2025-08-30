@@ -19,8 +19,7 @@ public class EnemyProfileSO : ScriptableObject
     [Tooltip("プレイヤーの攻撃に反応してカウンターを試みる確率")]
     [SerializeField, Range(0f, 1f)] float reactiveCounterChance = 0.5f;
 
-    [Tooltip("カウンター状態の持続時間（秒）")]
-    [SerializeField] float counterStateDuration = 1f;
+    [Header("攻撃設定")]
     [Tooltip("攻撃状態の持続時間（秒）")]
     [SerializeField] float attackStateDuration = 1f;
 
@@ -48,7 +47,6 @@ public class EnemyProfileSO : ScriptableObject
     public StatusConst Status => status;
     public float IdleTime => idleTime;
     public float ReactiveCounterChance => reactiveCounterChance;
-    public float CounterStateDuration => counterStateDuration;
     public float AttackStateDuration => attackStateDuration;
     public float LowHealthRefreshThreshold => lowHealthRefreshThreshold;
     public int AttackWeight => attackWeight;

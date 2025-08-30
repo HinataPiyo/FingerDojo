@@ -62,7 +62,7 @@ public class EnemyHand : MonoBehaviour, IDamageble
     public void TakeDamage(float damage)
     {
         // Playerがカウンターしてきたら加算する
-        if (GameManager.instance.PlayerHand.P_State == BattleState.Counter)
+        if (GameManager.instance.PlayerHealth.P_State == BattleState.Counter)
         {
             enemyActionBreak.CheckBreak();      // ブレイク状態を更新する
         }

@@ -1,26 +1,23 @@
+using Command;
 using UnityEngine;
 
 public class PlayerStateController : MonoBehaviour
 {
     [Header("アニメーション"), SerializeField] Animator handAnim;
-    [Header("GameObjects"), SerializeField] TimingBarController timingBarCtrl;
-    [Header("Effect")]
-    [SerializeField] GameObject effect_Counter_Success;
-    [SerializeField] GameObject effect_Refresh;
+    PlayerHealth p_Health;
+    Break cmd_break;
 
-    [SerializeField] CommandTimingQTE cmd_TimingQTE;
-
-    [Header("Settings"), SerializeField] float counterDuration = 0.5f;
-
-    PlayerHand playerHand;
     float _stateTime;
     bool stateEnter;
-    EffectEvents refresh_Event;     // リフレッシュのエフェクトのスクリプト
+    
+    public Animator P_Animator => handAnim;
     public BattleState State { get; private set; } = BattleState.Idle;
 
     void Awake()
     {
-        playerHand = GetComponent<PlayerHand>();
+        p_Health = GetComponent<PlayerHealth>();
+        cmd_break = GetComponent<Break>();
+
         Initialize();
     }
 
@@ -29,7 +26,7 @@ public class PlayerStateController : MonoBehaviour
     /// </summary>
     void Initialize()
     {
-
+        
     }
 
     void LateUpdate()
@@ -43,21 +40,14 @@ public class PlayerStateController : MonoBehaviour
     }
 
     /// <summary>
-    /// コマンドを実行する
-    /// </summary>
-    public void ExecuteCommand(CommandSO command)
-    {
-        command.Execute(gameObject);
-    }
-
-    /// <summary>
     /// ステートの切り替え
     /// </summary>
-    public void StateChange(BattleState nextState)
+    public void StateChange(BattleState nextState, ICommand _cmd)
     {
         State = nextState;
         _stateTime = 0;
         stateEnter = true;
+        _cmd?.Execute();
     }
 
     void Update()
@@ -74,93 +64,43 @@ public class PlayerStateController : MonoBehaviour
                 {
                     // コマンドボタンを押せる状態にする
                     GameUIManager.instance.SetCMDInteractable(true);
-                    SetHandAnimation(BattleState.Refresh_End);
-
-                    SetHandAnimation(BattleState.Idle);
                 }
-
                 break;
             case BattleState.Attack:
-                if (stateEnter)
-                {
-                    GameUIManager.instance.SetCMDInteractable(false);
-                    SetHandAnimation(BattleState.Attack);       // アニメーション
-                    // タイミングバーを出現
-                    timingBarCtrl.gameObject.SetActive(true);
-                    cmd_TimingQTE.gameObject.SetActive(true);
-
-                    GameManager.instance.EnemyHand.E_Counter.CheckCounterAction();      // 敵がカウンターをするか判定
-                }
-
                 break;
             case BattleState.Counter:
-                if (stateEnter)
-                {
-                    SoundManager.instance.PlaySE("counter_befor");
-                    GameUIManager.instance.SetCMDInteractable(false);
-                    SetHandAnimation(BattleState.Counter);
-                }
                 // counterDurationの間 CMD UI は非アクティブ
-                if (_stateTime > counterDuration && State != BattleState.Counter_Success)
+                if (_stateTime > p_Health.P_Data.Status.CounterStateDuration
+                && State != BattleState.Counter_Success)
                 {
-                    StateChange(BattleState.Idle);
+                    // カウンターボタンは押したものの失敗してしまったらIdleになる
+                    StateChange(BattleState.Idle, null);
                 }
                 break;
             case BattleState.Counter_Success:
-                if (stateEnter)
-                {
-                    GameUIManager.instance.ActiveCounterText();
-                    SoundManager.instance.PlaySE("counter_success");
-                    GameManager.instance.StartMomentTime();     // 一瞬止める
-                    Instantiate(effect_Counter_Success, playerHand.CounterPos.position, Quaternion.identity);      // エフェクトを生成
-                    SetHandAnimation(BattleState.Counter_Success);
-                }
-
-                if (_stateTime > 0.5) StateChange(BattleState.Idle);
+                if (_stateTime > p_Health.P_Data.Status.CounterStateDuration)
+                    StateChange(BattleState.Idle, null);
                 break;
             case BattleState.Hit:
                 if (stateEnter)
                 {
-                    SetHandAnimation(BattleState.Hit);
+                    GameUIManager.instance.SetCMDInteractable(false);
+                    handAnim.SetTrigger("Hit");
                 }
 
-                if (_stateTime > 0.25)
+                if (_stateTime > p_Health.P_Data.Status.HitDuration)
                 {
-                    StateChange(BattleState.Idle);
+                    GameUIManager.instance.SetCMDInteractable(true);
+                    StateChange(BattleState.Idle, null);
                 }
                 break;
             case BattleState.Refresh:
-                if (stateEnter)
-                {
-                    refresh_Event = Instantiate(effect_Refresh, playerHand.RefreshPos.position, Quaternion.identity).GetComponent<EffectEvents>();
-
-                    GameUIManager.instance.SetCMDInteractable(false);
-                    playerHand.Refresh();
-                    SetHandAnimation(BattleState.Refresh);
-                }
-
-                break;
-            case BattleState.Refresh_End:
-                if (stateEnter)
-                {
-                    refresh_Event?.EventDestroy();       // 任意のタイミングでエフェクトを削除
-                    StateChange(BattleState.Idle);
-                }
-
                 break;
             case BattleState.Break:
-                if (stateEnter)
-                {
-                    GameUIManager.instance.SetCMDInteractable(false);       // UIを触れなくする
-                    SetHandAnimation(BattleState.Break);
-                }
                 // 設定したブレイク時間が過ぎればIdleに戻る
-                if (_stateTime > playerHand.P_Data.Status.BreakTime)
+                if (_stateTime > p_Health.P_Data.Status.BreakTime)
                 {
-                    Debug.Log("Break End!!");
-                    playerHand.ResetBreakCountUI();     // テキストを初期化
-                    handAnim.SetBool("Break", false);
-                    StateChange(BattleState.Idle);
+                    cmd_break.DurationEvent();
                 }
                 break;
             case BattleState.Skill:
@@ -181,36 +121,8 @@ public class PlayerStateController : MonoBehaviour
     }
 
     /// <summary>
-    /// アニメーションを再生する
+    /// アニメーションイベントで設定
     /// </summary>
-    void SetHandAnimation(BattleState state)
-    {
-        switch (state)
-        {
-            case BattleState.Attack:
-                handAnim.SetBool("Attack", true);
-                break;
-            case BattleState.Counter:
-                handAnim.SetTrigger("Counter");
-                break;
-            case BattleState.Counter_Success:
-                handAnim.SetTrigger("Counter_Success");
-                break;
-            case BattleState.Hit:
-                handAnim.SetTrigger("Hit");
-                break;
-            case BattleState.Refresh:
-                handAnim.SetBool("Refresh", true);
-                break;
-            case BattleState.Refresh_End:
-                handAnim.SetBool("Refresh", false);
-                break;
-            case BattleState.Break:
-                handAnim.SetBool("Break", true);
-                break;
-        }
-    }
-
     public void AttackImpactAnimation()
     {
         handAnim.SetBool("Attack", false);

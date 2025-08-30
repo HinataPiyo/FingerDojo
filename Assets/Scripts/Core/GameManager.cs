@@ -5,12 +5,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
 
-    [SerializeField] PlayerHand playerHand;
+    [SerializeField] PlayerHealth playerHand;
     [SerializeField] EnemyHand enemyHand;
 
     Coroutine cor_MomentTime;
 
-    public PlayerHand PlayerHand => playerHand;
+    public PlayerHealth PlayerHealth => playerHand;
     public EnemyHand EnemyHand => enemyHand;
 
     public bool isGameEnd { get; private set;}
