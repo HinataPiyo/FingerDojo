@@ -41,7 +41,7 @@ namespace Command
         /// </summary>
         public void CheckBreak()
         {
-            if (GameManager.instance.EnemyHand.E_State == BattleState.Counter)
+            if (GameManager.instance.EnemyHealth.E_State == BattleState.Counter)    // 敵がカウンター状態
             {
                 if (p_StateCtrl.State == BattleState.Break) return;
 

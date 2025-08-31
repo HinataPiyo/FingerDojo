@@ -35,8 +35,6 @@ public class PlayerStateController : MonoBehaviour
         {
             stateEnter = false;
         }
-
-        Debug.Log("PlayerState : " + State.ToString());
     }
 
     /// <summary>
@@ -82,12 +80,6 @@ public class PlayerStateController : MonoBehaviour
                     StateChange(BattleState.Idle, null);
                 break;
             case BattleState.Hit:
-                if (stateEnter)
-                {
-                    GameUIManager.instance.SetCMDInteractable(false);
-                    handAnim.SetTrigger("Hit");
-                }
-
                 if (_stateTime > p_Health.P_Data.Status.HitDuration)
                 {
                     GameUIManager.instance.SetCMDInteractable(true);

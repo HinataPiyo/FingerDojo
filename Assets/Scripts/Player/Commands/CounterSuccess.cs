@@ -26,5 +26,18 @@ namespace Command
             GameManager.instance.StartMomentTime();     // 一瞬止める
             Instantiate(effect_Counter_Success, p_Health.CounterPos.position, Quaternion.identity);      // エフェクトを生成
         }
+
+        public bool CheckCounter()
+        {
+            // カウンター中だった場合
+            if (p_StateCtrl.State == BattleState.Counter)
+            {
+                CombatCalculator.instance.PlayerToEnemyCounter();
+                p_StateCtrl.StateChange(BattleState.Counter_Success, this);
+                return true;
+            }
+
+            return false;
+        }
     }
 }

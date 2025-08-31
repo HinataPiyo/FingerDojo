@@ -9,11 +9,11 @@ using System.Collections.Generic;
 public class EnemyProfileSO : ScriptableObject
 {
     [Header("基本情報")]
-    [Tooltip("敵の基本的なステータス（体力、攻撃力など）")]
     [SerializeField] StatusConst status;
 
-    [Tooltip("行動を選択するまでの待機時間")]
+    [Header("待機間隔の設定")]
     [SerializeField] float idleTime = 2f;
+    [SerializeField] float idleTimeMultiplier = 0.5f;
 
     [Header("カウンター設定")]
     [Tooltip("プレイヤーの攻撃に反応してカウンターを試みる確率")]
@@ -22,10 +22,6 @@ public class EnemyProfileSO : ScriptableObject
     [Header("攻撃設定")]
     [Tooltip("攻撃状態の持続時間（秒）")]
     [SerializeField] float attackStateDuration = 1f;
-
-    [Header("AIの賢さ（行動パターン）")]
-    [Tooltip("HPがこの割合（0~1）以下になると、Refresh（回復）を優先的に選択する")]
-    [SerializeField, Range(0f, 1f)] float lowHealthRefreshThreshold = 0.3f;
 
     [Header("アクションの選択重み")]
     [Tooltip("攻撃アクションの基本選択重み")]
@@ -46,9 +42,9 @@ public class EnemyProfileSO : ScriptableObject
     // --- public properties ---
     public StatusConst Status => status;
     public float IdleTime => idleTime;
+    public float IdleTimeMultiplier => idleTimeMultiplier;
     public float ReactiveCounterChance => reactiveCounterChance;
     public float AttackStateDuration => attackStateDuration;
-    public float LowHealthRefreshThreshold => lowHealthRefreshThreshold;
     public int AttackWeight => attackWeight;
     public int RefreshWeight => refreshWeight;
     public int CounterWeight => counterWeight;

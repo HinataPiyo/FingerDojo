@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using EnemyAction;
 using UnityEngine;
 
 /// <summary>
@@ -9,17 +10,42 @@ using UnityEngine;
 /// </summary>
 public class EnemyDecisionController : MonoBehaviour
 {
-    EnemyStateController enemyState;
-    EnemyHand enemyHand;
+    EnemyStateController e_StateCtrl;
+    EnemyHealth EnemyHealth;
+
+    Attack cmd_attack;
+    Counter cmd_counter;
+    CounterSuccess cmd_counter_success;
+    Break cmd_break;
+    Refresh cmd_refresh;
+
+    WaitForSeconds idleDuration;
+    WaitForSeconds speedUpIdleDuration;
+    WaitUntil notBreak;
+    WaitWhile isRefresh;
+    WaitUntil isIdle;
+
 
     void Awake()
     {
-        enemyState = GetComponent<EnemyStateController>();
-        enemyHand = GetComponent<EnemyHand>();
+        e_StateCtrl = GetComponent<EnemyStateController>();
+        EnemyHealth = GetComponent<EnemyHealth>();
+
+        cmd_attack = GetComponent<Attack>();
+        cmd_counter = GetComponent<Counter>();
+        cmd_counter_success = GetComponent<CounterSuccess>();
+        cmd_break = GetComponent<Break>();
+        cmd_refresh = GetComponent<Refresh>();
     }
 
     void Start()
     {
+        idleDuration = new WaitForSeconds(EnemyHealth.E_Profile.IdleTime);
+        speedUpIdleDuration = new WaitForSeconds(EnemyHealth.E_Profile.IdleTime * EnemyHealth.E_Profile.IdleTimeMultiplier);
+        notBreak = new WaitUntil(() => e_StateCtrl.State != BattleState.Break);
+        isRefresh = new WaitWhile(() => e_StateCtrl.State == BattleState.Refresh);
+        isIdle = new WaitUntil(() => e_StateCtrl.State == BattleState.Idle);
+
         // AIの行動決定フローを開始する
         StartCoroutine(DecideNextStateFlow());
     }
@@ -31,21 +57,21 @@ public class EnemyDecisionController : MonoBehaviour
     {
         while (true)
         {
-            if (GameManager.instance.PlayerHealth.P_State == BattleState.Attack
-            || GameManager.instance.PlayerHealth.P_State == BattleState.Goad
-            || GameManager.instance.PlayerHealth.P_State == BattleState.Break)
+            if (DurationSpeedUp())
             {
-                yield return new WaitForSeconds(enemyHand.E_Profile.IdleTime * 0.35f);
+                yield return speedUpIdleDuration;
             }
             else
             {
-                yield return new WaitForSeconds(enemyHand.E_Profile.IdleTime);
+                yield return idleDuration;
             }
 
-            yield return new WaitUntil(() => enemyState.State != BattleState.Break);
-            yield return new WaitWhile(() => enemyState.State == BattleState.Refresh);
+            yield return notBreak;
+            yield return isRefresh;
+            yield return isIdle;
 
             if (GameManager.instance.isGameEnd) yield break;
+
             DecideState();
         }
     }
@@ -56,15 +82,7 @@ public class EnemyDecisionController : MonoBehaviour
     /// </summary>
     void DecideState()
     {
-        if (enemyState.State != BattleState.Idle) return;
-        
-        // --- 優先順位1: 緊急回復 ---
-        // HPが閾値を下回っている場合、最優先で回復を試みる
-        if (enemyHand.GetCurrentHealth / enemyHand.E_Profile.Status.Health <= enemyHand.E_Profile.LowHealthRefreshThreshold)
-        {
-            enemyState.StateChange(BattleState.Refresh);
-            return;
-        }
+        if (e_StateCtrl.State != BattleState.Idle) return;
 
         // --- 実行可能なアクションのリストアップ ---
         var availableActions = new List<BattleState>();
@@ -72,14 +90,16 @@ public class EnemyDecisionController : MonoBehaviour
 
         // 攻撃は常に追加
         availableActions.Add(BattleState.Attack);
-        weights.Add(enemyHand.E_Profile.AttackWeight);
+        weights.Add(EnemyHealth.E_Profile.AttackWeight);
 
         // 回復（HPが満タンでなければ選択肢に入れる）
-        if (enemyHand.GetCurrentHealth < enemyHand.E_Profile.Status.Health)
+        if (EnemyHealth.GetCurrentHealth < EnemyHealth.E_Profile.Status.Health)
         {
             availableActions.Add(BattleState.Refresh);
-            weights.Add(enemyHand.E_Profile.RefreshWeight);
+            weights.Add(EnemyHealth.E_Profile.RefreshWeight);
         }
+
+        // カウンターはPlayerが攻撃時、随時判定
 
         // 挑発（常に可能とする）
         // availableActions.Add(BattleState.Goad);
@@ -93,12 +113,14 @@ public class EnemyDecisionController : MonoBehaviour
         if (availableActions.Count > 0)
         {
             // 念のため、回復中ならこの処理を抜ける
-            if (enemyState.State == BattleState.Refresh)
+            if (e_StateCtrl.State == BattleState.Refresh)
             {
                 return;
             }
 
-            enemyState.StateChange(GetWeightedRandomAction(availableActions, weights));
+            BattleState state = GetWeightedRandomAction(availableActions, weights);
+
+            e_StateCtrl.StateChange(state, GetEnemyAction(state));
         }
     }
 
@@ -124,5 +146,31 @@ public class EnemyDecisionController : MonoBehaviour
 
         // フォールバック
         return actions[0];
+    }
+
+    ICommand GetEnemyAction(BattleState state)
+    {
+        switch (state)
+        {
+            case BattleState.Attack:
+                return cmd_attack;
+            case BattleState.Refresh:
+                return cmd_refresh;
+            case BattleState.Counter:
+                return cmd_counter;
+            case BattleState.Counter_Success:
+                return cmd_counter_success;
+            case BattleState.Break:
+                return cmd_break;
+            default:
+                return null;
+        }
+    }
+
+    bool DurationSpeedUp()
+    {
+        return GameManager.instance.PlayerHealth.P_State == BattleState.Attack
+            || GameManager.instance.PlayerHealth.P_State == BattleState.Goad
+            || GameManager.instance.PlayerHealth.P_State == BattleState.Break;
     }
 }

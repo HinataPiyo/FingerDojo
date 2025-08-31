@@ -1,3 +1,4 @@
+using EnemyAction;
 using UnityEngine;
 
 /// <summary>
@@ -8,20 +9,17 @@ public class EnemyStateController : MonoBehaviour
     [Header("Animator")]
     [SerializeField] Animator handAnim;
 
-    [Header("Effect")]
-    [SerializeField] GameObject effect_Counter_Success;
-    [SerializeField] GameObject effect_Refresh;
-
     float _stateTime;
     bool stateEnter;
-    EnemyHand enemyHand;
-    EffectEvents refresh_Event;     // リフレッシュのエフェクトのスクリプト
+    Break cmd_Break;
+    EnemyHealth e_Health;
     public BattleState State { get; private set; } = BattleState.Idle;
-    public Animator EnemyAnimator => handAnim;
+    public Animator E_Animator => handAnim;
 
     void Awake()
     {
-        enemyHand = GetComponent<EnemyHand>();
+        e_Health = GetComponent<EnemyHealth>();
+        cmd_Break = GetComponent<Break>();
         Initialize();
     }
 
@@ -44,11 +42,12 @@ public class EnemyStateController : MonoBehaviour
     /// <summary>
     /// ステートの切り替え
     /// </summary>
-    public void StateChange(BattleState nextState)
+    public void StateChange(BattleState nextState, ICommand _cmd)
     {
         State = nextState;
         _stateTime = 0;
         stateEnter = true;
+        _cmd?.Execute();
     }
 
     void Update()
@@ -62,74 +61,33 @@ public class EnemyStateController : MonoBehaviour
             case BattleState.BattleIntro:
                 break;
             case BattleState.Idle:
-                if (stateEnter)
-                {
-                    handAnim.SetBool("Counter_Success", false);
-                    handAnim.SetBool("Break", false);
-                    SetHandAnimation(BattleState.Refresh_End);
-                }
-
                 break;
             case BattleState.Attack:
-                if (stateEnter)
-                {
-                    // アニメーション(アニメーションイベントでに攻撃発火)
-                    SetHandAnimation(BattleState.Attack);
-                }
-                if (_stateTime > enemyHand.E_Profile.AttackStateDuration) StateChange(BattleState.Idle);
+                if (_stateTime > e_Health.E_Profile.AttackStateDuration) StateChange(BattleState.Idle, null);
                 break;
             case BattleState.Counter:
-                if (stateEnter)
-                {
-                    SetHandAnimation(BattleState.Counter);
-                }
                 // カウンターの持続時間が過ぎればIdleに戻る
-                if (_stateTime > enemyHand.E_Profile.Status.CounterStateDuration)
-                {
-                    StateChange(BattleState.Idle);
-                }
+                if (_stateTime > e_Health.E_Profile.Status.CounterStateDuration
+                && State != BattleState.Counter_Success) StateChange(BattleState.Idle, null);
                 break;
             case BattleState.Counter_Success:
-                if (stateEnter)
+                // カウンター持続時間が過ぎたらIdleに戻る
+                if (_stateTime > e_Health.E_Profile.Status.CounterStateDuration)
                 {
-                    GameUIManager.instance.ActiveCounterText();     // カウンターテキストをアクティブ化
-                    SoundManager.instance.PlaySE("counter_success");
-                    GameManager.instance.StartMomentTime();     // 一瞬止める
-                    Instantiate(effect_Counter_Success, enemyHand.CounterPos.position, Quaternion.identity);      // エフェクトを生成
-                    SetHandAnimation(BattleState.Counter_Success);
-                }
-                if (_stateTime > enemyHand.E_Profile.Status.CounterStateDuration) StateChange(BattleState.Idle);
-                break;
-            case BattleState.Refresh:
-                if (stateEnter)
-                {
-                    refresh_Event = Instantiate(effect_Refresh, enemyHand.RefreshPos.position, Quaternion.identity).GetComponent<EffectEvents>();
-                    SetHandAnimation(BattleState.Refresh);
-                    enemyHand.Refresh();
+                    StateChange(BattleState.Idle, null);
                 }
                 break;
-            case BattleState.Refresh_End:
-                if (stateEnter)
+            case BattleState.Hit:
+                if (_stateTime > e_Health.E_Profile.Status.HitDuration)
                 {
-                    refresh_Event?.EventDestroy();       // 任意のタイミングでエフェクトを削除
-
-                    // ブレイク中はステートを切り替えない
-                    if (State != BattleState.Break)
-                    {
-                        StateChange(BattleState.Idle);
-                    }
+                    StateChange(BattleState.Idle, null);
                 }
                 break;
             case BattleState.Break:
-                if (stateEnter)
-                {
-                    SetHandAnimation(BattleState.Break);
-                }
                 // 設定したブレイク時間が過ぎればIdleに戻る
-                if (_stateTime > enemyHand.E_Profile.Status.BreakTime)
+                if (_stateTime > e_Health.E_Profile.Status.BreakTime)
                 {
-                    enemyHand.ResetBreakCountUI.Invoke();
-                    StateChange(BattleState.Idle);
+                    cmd_Break.DurationEvent();
                 }
                 break;
             case BattleState.Skill:
@@ -141,36 +99,6 @@ public class EnemyStateController : MonoBehaviour
             case BattleState.GameOver:
                 break;
             default:
-                break;
-        }
-    }
-
-    /// <summary>
-    /// アニメーションを再生する
-    /// </summary>
-    void SetHandAnimation(BattleState state)
-    {
-        switch (state)
-        {
-            case BattleState.Idle:
-                break;
-            case BattleState.Attack:
-                handAnim.SetTrigger("Attack");
-                break;
-            case BattleState.Counter:
-                handAnim.SetTrigger("Counter");
-                break;
-            case BattleState.Counter_Success:
-                handAnim.SetBool("Counter_Success", true);
-                break;
-            case BattleState.Refresh:
-                handAnim.SetBool("Refresh", true);
-                break;
-            case BattleState.Refresh_End:
-                handAnim.SetBool("Refresh", false);
-                break;
-            case BattleState.Break:
-                handAnim.SetBool("Break", true);
                 break;
         }
     }

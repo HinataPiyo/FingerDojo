@@ -6,12 +6,12 @@ public class GameManager : MonoBehaviour
     public static GameManager instance { get; private set; }
 
     [SerializeField] PlayerHealth playerHand;
-    [SerializeField] EnemyHand enemyHand;
+    [SerializeField] EnemyHealth enemyHealth;
 
     Coroutine cor_MomentTime;
 
     public PlayerHealth PlayerHealth => playerHand;
-    public EnemyHand EnemyHand => enemyHand;
+    public EnemyHealth EnemyHealth => enemyHealth;
 
     public bool isGameEnd { get; private set;}
 
@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
         }
 
         // 敵データの初期化処理
-        enemyHand.Initialize(TitleUIManager.instance?.SelectEnemyData);
+        enemyHealth.Initialize(TitleUIManager.instance?.SelectEnemyData);
     }
 
     public void StartMomentTime()

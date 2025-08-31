@@ -796,13 +796,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 254627909}
-  - component: {fileID: 254627910}
   - component: {fileID: 254627911}
+  - component: {fileID: 254627910}
   - component: {fileID: 254627913}
-  - component: {fileID: 254627912}
   - component: {fileID: 254627914}
+  - component: {fileID: 254627912}
   - component: {fileID: 254627915}
+  - component: {fileID: 254627919}
   - component: {fileID: 254627916}
+  - component: {fileID: 254627918}
   m_Layer: 0
   m_Name: EnemyHand
   m_TagString: Untagged
@@ -843,8 +845,6 @@ MonoBehaviour:
   takeDamageUI: {fileID: 5282685873826585990, guid: 83f79e2e855f04b47bbb4e5590157656, type: 3}
   effect_Hit: {fileID: 5424460303727441523, guid: 10359ec5f06a67a4a83278b36024dfcf, type: 3}
   handPos: {fileID: 1586893061}
-  counterPos: {fileID: 1607297166}
-  refreshPos: {fileID: 159760730}
   enemyProfile: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
   healthSlider: {fileID: 1112884971}
 --- !u!95 &254627911
@@ -894,8 +894,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handAnim: {fileID: 254627911}
-  effect_Counter_Success: {fileID: 6058184271372599556, guid: 0a28b617900353e428ad6d7557822f4a, type: 3}
-  effect_Refresh: {fileID: 968606549949319688, guid: 9b119040c8ee4b04a8fd69fd4e2a933c, type: 3}
 --- !u!114 &254627914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -932,7 +930,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94d1df0cde9836748bf6344a347f2d9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthSlider: {fileID: 1112884971}
+  breakCount_Text: {fileID: 1476112876}
+--- !u!114 &254627918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254627908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b3a89aea9360d44dab86ce8a133d0e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  refreshPos: {fileID: 159760730}
+  effect_Refresh: {fileID: 968606549949319688, guid: 9b119040c8ee4b04a8fd69fd4e2a933c, type: 3}
+--- !u!114 &254627919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254627908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda581facdf3dbd488cdb3996c1e3072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  counterPos: {fileID: 1607297166}
+  effect_Counter_Success: {fileID: 6058184271372599556, guid: 0a28b617900353e428ad6d7557822f4a, type: 3}
 --- !u!1 &281963542
 GameObject:
   m_ObjectHideFlags: 0
@@ -2273,8 +2299,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 283dd178c3fee634a87e6b5b579d01d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHand: {fileID: 254627910}
-  playerHand: {fileID: 130995169}
+  e_Health: {fileID: 254627910}
+  p_Health: {fileID: 130995169}
 --- !u!4 &704794118
 Transform:
   m_ObjectHideFlags: 0
@@ -4153,7 +4179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHand: {fileID: 130995169}
-  enemyHand: {fileID: 254627910}
+  enemyHealth: {fileID: 254627910}
 --- !u!1 &1366319633
 GameObject:
   m_ObjectHideFlags: 0

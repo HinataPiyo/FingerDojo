@@ -53,14 +53,8 @@ public class PlayerHealth : MonoBehaviour, IDamageble
     public void TakeDamage(float damage)
     {
         cmd_break.CheckBreak();     // Breakできるか判定
-
-        // カウンター中だった場合
-        if (playerState.State == BattleState.Counter)
-        {
-            CombatCalculator.instance.PlayerToEnemyCounter();
-            playerState.StateChange(BattleState.Counter_Success, cmd_CounterSuccess);
-            return;
-        }
+        bool isCounter = cmd_CounterSuccess.CheckCounter();         // カウンター状態を更新する
+        if (isCounter) return;
 
         health -= damage;
         healthSlider.HitSetHealthUI(health, playerData.Status.Health);
@@ -82,10 +76,12 @@ public class PlayerHealth : MonoBehaviour, IDamageble
     {
         cmd_Refresh.CancelRefresh();        // もしリフレッシュ中ならキャンルする
         // ブレイク中はアニメーションを再生しない & Attack中はアニメーションを再生しない
-        if (P_State != BattleState.Break && P_State != BattleState.Attack)
+        if (P_State == BattleState.Idle)
         {
             // ステートチェンジ
             playerState.StateChange(BattleState.Hit, null);
+            GameUIManager.instance.SetCMDInteractable(false);
+            playerState.P_Animator.SetTrigger("Hit");
         }
 
         Instantiate(effect_Hit, handPos.position, Quaternion.identity);     // Hitエフェクト
