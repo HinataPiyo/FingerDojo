@@ -5,6 +5,7 @@ This folder collects the project overview, gameplay rules, architecture summary,
 ## Quick links
 - [Project Overview](./ProjectOverview.md)
 - [Gameplay Specification](./GameplaySpec.md)
+- [Skills, Taunt & Difficulty Proposal](./CombatSkillsAndDifficultySpec.md)
 - [Architecture Overview](./Architecture.md)
 - [Release Checklist](./ReleaseChecklist.md)
 
@@ -19,4 +20,4 @@ This folder collects the project overview, gameplay rules, architecture summary,
 ## Current state
 The project is a prototype or early game loop built around a turn-based timing battle. The title screen selects a difficulty profile, then the battle scene loads an enemy profile and begins a fight where the player can attack, counter, break the enemy, or refresh.
 
-The repository currently has no dedicated gameplay design document or QA document outside this folder, so the documentation here is intended to reflect only the implemented code and the verification that was possible in the workspace.
+The gameplay specification records observed implementation. The skills, taunt, and five-difficulty document is a proposal for unimplemented gameplay; its values are initial playtest targets, not validated balance or approved product decisions.

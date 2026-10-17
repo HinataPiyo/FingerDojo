@@ -3,6 +3,8 @@
 ## Scope
 This document captures the game rules and flow that are explicitly visible in the implemented code and scene data. It is intentionally limited to what the repository currently proves.
 
+Proposed rules for unimplemented skills, taunt, and five difficulty tiers are documented separately in [CombatSkillsAndDifficultySpec.md](./CombatSkillsAndDifficultySpec.md). Those proposals do not describe current runtime behavior.
+
 ## Title flow
 ### Home screen
 The title scene contains a home canvas and a difficulty canvas.
@@ -86,3 +88,5 @@ The actual execution is handled by the enemy command classes (`Attack`, `Refresh
 - Whether the game is intended to be single-stage or multi-stage
 - Whether the battle loop and UI progression are final versus prototype-only
 - Whether a first-result-wins policy is the desired product rule for genuinely simultaneous defeat conditions; Unity's current synchronous call order makes it the minimal deterministic policy
+- The TitleScene has difficulty button instances, but only one enemy-profile asset was found and the complete five-tier mapping is unverified.
+- `Skill` and `Goad` are enum values rather than working player commands in the current implementation.
