@@ -55,3 +55,14 @@ The code is strongly centered on MonoBehaviour components and scene object refer
 - Scene-driven object references mean runtime issues can occur if a serialized field is not assigned correctly
 - The project has some duplicated patterns between player and enemy logic, which makes maintenance somewhat heavier
 - There is no automated test project or CI check yet, so runtime regressions are only caught by manual playtest
+- Camera shake requests are serialized through a single coroutine so an older shake cannot clear a newer request; verify overlapping hits in Play Mode
+
+## Refactoring candidates and priority
+| Priority | Target | Finding and impact | Decision |
+|---|---|---|---|
+| 1 | `CameraShake.Shake()` | Concurrent hit callbacks could let an earlier coroutine reset the Cinemachine gains while a later shake was still active. This could visibly truncate the later hit response. | Fixed by owning one active coroutine. Build verified; overlapping-hit Play Mode check remains pending. |
+| 2 | `Player.Commands.Refresh` and `EnemyAction.Refresh` | The refresh loops are similar but differ in their health/profile sources and components. Sharing them now would introduce coupling and risks changing cancel/state behavior without tests. | Defer until runtime behavior is covered by tests or repeated changes make the duplication costly. |
+| 4 | `EnemyDecisionController.DecideState()` | Each AI decision allocates action/weight lists and uses LINQ `Sum`. It runs after an idle wait (configured as seconds), not every frame. No Profiler evidence indicates a meaningful CPU or GC issue. | Defer; measure on a representative device before optimizing. |
+| 3 | `EnemyStateController.stateEnter` | The field is assigned but never read, producing the existing CS0414 warning. No gameplay effect is demonstrated by removing it. | Defer as cleanup; not a performance issue and does not block the game loop. |
+
+No Profiler measurements were collected in this session. The CameraShake change addresses overlapping routine correctness; it is not reported as a measured performance improvement.

@@ -7,6 +7,9 @@ public class CameraShake : MonoBehaviour
 {
     public static CameraShake instance { get; private set; }
 
+    CinemachineBasicMultiChannelPerlin perlin;
+    Coroutine cor_PlayShake;
+
     void Awake()
     {
         if (instance == null) instance = this;
@@ -14,12 +17,8 @@ public class CameraShake : MonoBehaviour
         {
             Destroy(gameObject);
             return;
-        } 
-    }
+        }
 
-    CinemachineBasicMultiChannelPerlin perlin;
-    void Start()
-    {
         perlin = GetComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
@@ -28,7 +27,12 @@ public class CameraShake : MonoBehaviour
     /// </summary>
     public void Shake(float time, float amplitudeGain, float frequencyGain)
     {
-        StartCoroutine(PlayShake(time, amplitudeGain, frequencyGain));
+        if (cor_PlayShake != null)
+        {
+            StopCoroutine(cor_PlayShake);
+        }
+
+        cor_PlayShake = StartCoroutine(PlayShake(time, amplitudeGain, frequencyGain));
     }
 
     IEnumerator PlayShake(float time, float amplitudeGain, float frequencyGain)
@@ -42,7 +46,7 @@ public class CameraShake : MonoBehaviour
         }
 
         SetGain(0, 0);
-        yield break;
+        cor_PlayShake = null;
     }
 
     void SetGain(float amplitudeGain, float frequencyGain)

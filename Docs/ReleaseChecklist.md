@@ -8,6 +8,7 @@
 - [x] C# project compiles successfully (`dotnet build` completed with 0 errors)
 - [x] One warning remains: unused field in `EnemyStateController` (`stateEnter`)
 - [x] Static review found and fixed the title-manager canvas reference becoming stale after returning from battle
+- [x] Camera shake requests now share a single active coroutine to prevent overlapping shakes from resetting each other
 - [ ] Unity Editor runtime playthrough is complete
 - [ ] Confirm Unity External Script Editor points to VS Code
 - [ ] Final gameplay goals and release scope are documented
@@ -54,3 +55,11 @@ The Unity Editor is available and currently opens this project, but no Unity Edi
 6. Exercise player attack/QTE, player counter, refresh, enemy attacks, both result panels, and return-to-home.
 
 The title manager now refreshes its canvas references from the newly loaded TitleScene when Unity creates a duplicate manager. This fix is compile-verified but has not yet been runtime-verified in Play Mode.
+
+## Refactoring record
+### Camera shake coroutine ownership
+- **Problem:** Every `Shake()` call started an independent coroutine. If another hit occurred before the previous shake ended, the older coroutine could set the Cinemachine noise gains to zero while the newer shake was still active.
+- **Change:** Cache the required Cinemachine noise component in `Awake`, keep the active coroutine handle, and stop the previous shake routine before starting the latest request.
+- **Behavior impact:** A single shake retains its requested duration and gains. For overlapping requests, the latest request now controls one continuous shake rather than being prematurely cleared by an older routine.
+- **Performance:** No Profiler measurement was available. This is a reliability fix, not a claimed performance improvement.
+- **Verification:** C# build and diff checks; Unity Play Mode overlap behavior remains unverified.
