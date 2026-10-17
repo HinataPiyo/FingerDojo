@@ -13,6 +13,8 @@ namespace EnemyAction
 
         GameObject refresh_Particle;
         Coroutine cor_Refresh;
+        // 中断しても同じ回復量を再度獲得できないよう、今回の回復予算を保持する。
+        float remainingHealAmount;
 
         public bool isRefresh { get; private set; }
 
@@ -20,6 +22,12 @@ namespace EnemyAction
         {
             e_StateCtrl = GetComponent<EnemyStateController>();
             e_Health = GetComponent<EnemyHealth>();
+        }
+
+        void Start()
+        {
+            // EnemyProfileが確定した後に、この戦闘で使える回復量を初期化する。
+            remainingHealAmount = e_Health.E_Profile.Status.RefreshAmount;
         }
 
         public void Execute()
@@ -45,17 +53,23 @@ namespace EnemyAction
             float healPerSecond = e_Health.E_Profile.Status.RefreshAmount / e_Health.E_Profile.Status.RefreshTime;
             float timer = 0f;
 
-            while (timer < e_Health.E_Profile.Status.RefreshTime)
+            while (timer < e_Health.E_Profile.Status.RefreshTime
+                && remainingHealAmount > 0f
+                && !GameManager.instance.isGameEnd)
             {
-                // 1秒あたりの回復量に基づいて体力を加算します。
-                e_Health.Healing(healPerSecond);
+                // フレーム時間と残り予算の両方で上限をかけ、時間経過に応じて回復させる。
+                float elapsed = Mathf.Min(Time.deltaTime, e_Health.E_Profile.Status.RefreshTime - timer);
+                float requestedHealing = Mathf.Min(healPerSecond * elapsed, remainingHealAmount);
+                // HP上限で実際に増えなかった分は消費扱いにせず、実回復量だけ予算から引く。
+                remainingHealAmount -= e_Health.Healing(requestedHealing);
 
-                timer += Time.deltaTime;
+                timer += elapsed;
                 yield return null;
             }
 
-            RefreshEnd();
-            isRefresh = false;
+            bool completed = !GameManager.instance.isGameEnd;
+            RefreshEnd(completed);
+            cor_Refresh = null;
         }
 
         /// <summary>
@@ -65,7 +79,8 @@ namespace EnemyAction
         {
             if (cor_Refresh != null)
             {
-                RefreshEnd();
+                // 不完了終了では回復予算を戻さず、残量を次の回復動作へ持ち越す。
+                RefreshEnd(false);
                 StopCoroutine(cor_Refresh);
                 cor_Refresh = null;
             }
@@ -73,11 +88,18 @@ namespace EnemyAction
             isRefresh = false;
         }
         
-        void RefreshEnd()
+        void RefreshEnd(bool completed)
         {
+            if (completed)
+            {
+                // 一回分の時間を最後まで使い切った場合だけ、次の回復用予算を補充する。
+                remainingHealAmount = e_Health.E_Profile.Status.RefreshAmount;
+            }
+
             Destroy(refresh_Particle);
             e_StateCtrl.E_Animator.SetBool("Refresh", false);
             e_StateCtrl.StateChange(BattleState.Idle, null);
+            isRefresh = false;
         }
     }
 }

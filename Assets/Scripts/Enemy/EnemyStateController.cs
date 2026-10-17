@@ -12,6 +12,7 @@ public class EnemyStateController : MonoBehaviour
     float _stateTime;
     bool stateEnter;
     Break cmd_Break;
+    Attack cmd_Attack;
     EnemyHealth e_Health;
     public BattleState State { get; private set; } = BattleState.Idle;
     public Animator E_Animator => handAnim;
@@ -20,6 +21,7 @@ public class EnemyStateController : MonoBehaviour
     {
         e_Health = GetComponent<EnemyHealth>();
         cmd_Break = GetComponent<Break>();
+        cmd_Attack = GetComponent<Attack>();
         Initialize();
     }
 
@@ -65,12 +67,20 @@ public class EnemyStateController : MonoBehaviour
             case BattleState.Idle:
                 break;
             case BattleState.Attack:
-                if (_stateTime > e_Health.E_Profile.AttackStateDuration) StateChange(BattleState.Idle, null);
+                if (_stateTime > cmd_Attack.StateDuration)
+                {
+                    // AnimationEvent未着時の保険として、Attack側に残ったダメージ解決を依頼する。
+                    cmd_Attack.ResolveAtStateEnd();
+                    StateChange(BattleState.Idle, null);
+                }
                 break;
             case BattleState.Counter:
                 // カウンターの持続時間が過ぎればIdleに戻る
                 if (_stateTime > e_Health.E_Profile.Status.CounterStateDuration
-                && State != BattleState.Counter_Success) StateChange(BattleState.Idle, null);
+                && State != BattleState.Counter_Success)
+                {
+                    StateChange(BattleState.Idle, null);
+                }
                 break;
             case BattleState.Counter_Success:
                 // カウンター持続時間が過ぎたらIdleに戻る

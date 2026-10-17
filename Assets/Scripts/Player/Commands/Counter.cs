@@ -20,6 +20,8 @@ namespace Command
 
         public void Execute()
         {
+            // Counterは攻撃連打ではないため、敵の連続攻撃読み状態を解除する。
+            GameManager.instance.EnemyHealth.DecisionController.RegisterPlayerCommand(3, false);
             GameUIManager.instance.SetCMDInteractable(false);
             SoundManager.instance.PlaySE("counter_befor");
             p_StateCtrl.P_Animator.SetTrigger("Counter");

@@ -24,6 +24,11 @@
 - [ ] Break logic works and resets correctly
 - [ ] Refresh action restores health without breaking state
 - [ ] Enemy AI chooses valid actions and does not get stuck in Idle
+- [ ] Each of the five title difficulty buttons selects the matching profile
+- [ ] Revised technique and taunt designs are confirmed, implemented, and play-tested
+- [ ] Master/Transcendent repeated-command counter warning is visible and non-attack input clears it
+- [ ] Transcendent two-stage attack displays both stages, permits defense between stages, and stops after terminal results
+- [ ] In Hard, an attack-type command during an active enemy attack telegraph uses the reactive Counter chance; on success, the attack is canceled and the existing Counter delay is honored
 - [ ] HP bars and damage UI update correctly
 - [ ] Win/lose panel triggers correctly for both sides
 - [ ] After win/lose, delayed enemy animation events and ongoing refresh actions do not change HP or replace the result

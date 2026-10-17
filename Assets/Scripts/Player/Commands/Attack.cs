@@ -25,6 +25,8 @@ namespace Command
         public void Execute()
         {
             GameManager.instance.EnemyHealth.E_Counter.CheckCounterAction();      // 敵がカウンターをするか判定
+            // 難易度ギミック用に、今回の入力が連続攻撃履歴へ加算されることを通知する。
+            GameManager.instance.EnemyHealth.DecisionController.RegisterPlayerCommand(0, true);
             SoundManager.instance.PlaySE("sigekibutton_click");
             p_StateCtrl.P_Animator.SetBool("Attack", true);
             GameUIManager.instance.SetCMDInteractable(false);

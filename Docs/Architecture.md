@@ -11,22 +11,22 @@ The project organizes logic by gameplay responsibility:
 ## Main systems
 ### Core managers
 - [GameManager.cs](../Assets/Scripts/Core/GameManager.cs): owns the battle lifecycle and exposes player/enemy health references
-- [GameUIManager.cs](../Assets/Scripts/Core/GameUIManager.cs): toggles command interactivity and win/lose panels
+- [GameUIManager.cs](../Assets/Scripts/Core/GameUIManager.cs): binds command buttons, displays combat feedback, and toggles win/lose panels
 - [CombatCalculator.cs](../Assets/Scripts/Combat/CombatCalculator.cs): computes damage for player and enemy actions
 
 ### Player side
-- [PlayerStateController.cs](../Assets/Scripts/Player/PlayerStateController.cs): player battle state and transitions
+- [PlayerStateController.cs](../Assets/Scripts/Player/PlayerStateController.cs): player battle state transitions; Skill and Goad remain inactive placeholders
 - [PlayerHealth.cs](../Assets/Scripts/Player/PlayerHealth.cs): health, hit handling, healing, death, and damage UI
 - command classes under [Assets/Scripts/Player/Commands](../Assets/Scripts/Player/Commands): Attack, Counter, Refresh, Break, CounterSuccess
 
 ### Enemy side
-- [EnemyStateController.cs](../Assets/Scripts/Enemy/EnemyStateController.cs): enemy battle state and transitions
-- [EnemyHealth.cs](../Assets/Scripts/Enemy/EnemyHealth.cs): enemy health management and death condition
+- [EnemyStateController.cs](../Assets/Scripts/Enemy/EnemyStateController.cs): enemy battle state and transitions, including attack duration and Stagger
+- [EnemyHealth.cs](../Assets/Scripts/Enemy/EnemyHealth.cs): enemy health, selected profile access, and enemy command entry points
 - enemy AI classes under [Assets/Scripts/Enemy/AI](../Assets/Scripts/Enemy/AI): Attack, Counter, Break, Refresh, CounterSuccess, EnemyDecisionController
 
 ### Data model
 - [StatusConst.cs](../Assets/Scripts/Core/Constants/StatusConst.cs): shared battle status values, including HP, attack, refresh, break, and counter timing
-- [EnemyProfileSO.cs](../Assets/Scripts/Data/ScriptableObjects/EnemyProfileSO.cs): holds enemy profile settings and AI weights
+- [EnemyProfileSO.cs](../Assets/Scripts/Data/ScriptableObjects/EnemyProfileSO.cs): holds difficulty ID, stats, telegraph/counter timing, gimmick flags, and AI weights
 - [PlayerDataSO.cs](../Assets/Scripts/Data/ScriptableObjects/PlayerDataSO.cs): holds player status data
 - [EenmyDifficultyListSO.cs](../Assets/Scripts/Data/ScriptableObjects/EnemyBehavior/EenmyDifficultyListSO.cs): difficulty list used for enemy selection
 
@@ -50,13 +50,20 @@ The code is strongly centered on MonoBehaviour components and scene object refer
 | Capability | Required inputs / prerequisites | Processing and state owner | Notification / completion | Failure or downstream dependency |
 |---|---|---|---|---|
 | Battle initialization | BattleScene objects and serialized references; selected enemy profile or scene fallback | `GameManager` calls `EnemyHealth.Initialize`; `PlayerHealth` initializes its own HP in `Awake` | Health sliders are initialized | Player commands and enemy AI assume these values and references exist; scene validation remains pending |
-| Player action | `PlayerStateController.State == Idle`; command button event | Command component calls `StateChange`, which executes the command | State and command-specific animation/UI change | QTE/refresh completion returns to idle; transitions are blocked after terminal result |
-| Enemy action | Enemy profile, idle timer and `Idle` state | `EnemyDecisionController` chooses an action; enemy command executes it | Enemy state/animation changes | AI periodically retries; it checks battle completion after waiting |
+| Player action | `PlayerStateController.State == Idle`; implemented command button event | Command component calls `StateChange` | State, animation, QTE, or UI changes | QTE/refresh completion returns to idle; terminal transitions are blocked |
+| Skill / Goad placeholder | No active command implementation | No gameplay processing | None | Requires a revised design before implementation |
+| Enemy action | Enemy profile, idle timer and `Idle` state | `EnemyDecisionController` chooses an action; enemy command executes it | Enemy state/animation changes | Attack damage resolves once per stage; combos are capped at two stages |
 | Damage and counter | Damage power from QTE/animation; target health and state | `CombatCalculator` calculates damage; target Health owns HP and counter interception | Health UI updates, then hit or terminal callback | Damage is ignored after result; zero HP requests terminal resolution |
 | Battle termination | Either side reaches zero HP | Health requests `GameManager.GameClear` or `GameOver`; manager owns `isGameEnd` | `GameUIManager` displays result and disables command buttons | First terminal result wins; late state/damage/healing calls are ignored |
 | Retry / title return | Result UI action and TitleScene build index | `BackButton` loads title; persistent `TitleUIManager` rebinds scene canvases | Title and difficulty screens can be used again | Fresh BattleScene reload is expected to initialize a new match; manual runtime validation remains necessary |
 
 The terminal flag is the single match-wide completion owner. Individual player/enemy battle states remain local animation/action state and are not a substitute for the terminal flag.
+
+## Combat command ownership and difficulty data
+- `EnemyProfileSO` is selected by `DifficultyButton` and read by the battle AI; repeated-command history lives in `EnemyDecisionController`.
+- `EnemyAction.Attack` owns the sampled attack roll, telegraph, stage count, and idempotent animation-event damage. `EnemyStateController` owns state timeout.
+- `GameUIManager` renders combat feedback and telegraphs; it does not decide combat outcomes.
+- No EventBus was added. Direct component references remain suitable for this single-player, single-enemy scene.
 
 ## Design integrity findings
 ### A — Resolve before considering the battle flow complete
@@ -67,9 +74,9 @@ The terminal flag is the single match-wide completion owner. Individual player/e
   - **Verification:** compile verified; Play Mode terminal/coroutine checks remain pending.
 
 ### B — Address when affected gameplay is implemented
-- **Enemy difficulty break-count display:** `EnemyAction.Break.Awake()` initializes the counter text from the serialized fallback profile, while `GameManager.Awake()` may replace the active profile afterward. If difficulty profiles have different `MaxBreakCount`, the display may be stale for the selected profile until a reset. Reinitialize the display after `EnemyHealth.Initialize()` when verifying profiles with different break counts.
+- **Hard-tier telegraph Counter:** resolved as a reactive response to a player attack-type command during the enemy's active attack telegraph. The existing profile chance and attempt delay are reused; on success, the telegraphed attack is canceled before the Counter attempt. Play Mode timing remains unverified.
 - **Initialization depends on Unity Awake ordering:** enemy health UI/data initialization is invoked from `GameManager.Awake()` while other components initialize their own references in `Awake()`. Serialized references currently provide the dependency, but there is no explicit initialize-ready contract. Confirm scene behavior before introducing a bootstrap abstraction.
-- **State enum overstates current feature scope:** `BattleIntro`, `Refresh_End`, `Skill`, `Goad`, `BattleClear`, and `GameOver` are declared, but not all are active controller transitions. Do not implement wave/skill systems without a confirmed product requirement.
+- **State enum overstates current feature scope:** `BattleIntro`, `Refresh_End`, `BattleClear`, and `GameOver` are declared, but not all are active controller transitions. There is no wave system.
 - **Tests absent:** no automated tests were found. Key completion behavior still requires Editor playtesting; adding a test framework is deferred until a stable rules boundary exists.
 
 ### C — Defer

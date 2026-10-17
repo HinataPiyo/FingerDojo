@@ -24,6 +24,7 @@ public class EnemyHealth : MonoBehaviour, IDamageble
     Counter cmd_Counter;
     CounterSuccess cmd_CounterSuccess;
     Refresh cmd_Refresh;
+    EnemyDecisionController decisionController;
 
     float health;
     
@@ -31,6 +32,8 @@ public class EnemyHealth : MonoBehaviour, IDamageble
     public BattleState E_State => e_StateCtrl.State;
     public EnemyProfileSO E_Profile => enemyProfile;
     public Counter E_Counter => cmd_Counter;
+    // Counter判定から難易度条件と連続攻撃履歴を参照するために公開する。
+    public EnemyDecisionController DecisionController => decisionController;
 
     void Awake()
     {
@@ -39,6 +42,13 @@ public class EnemyHealth : MonoBehaviour, IDamageble
         cmd_Counter = GetComponent<Counter>();
         cmd_CounterSuccess = GetComponent<CounterSuccess>();
         cmd_Refresh = GetComponent<Refresh>();
+        decisionController = GetComponent<EnemyDecisionController>();
+    }
+
+    void Start()
+    {
+        // Sceneの初期化後に、敵のBreak回数表示をプロフィールに合わせて初期化する。
+        cmd_Break.ResetBreakCountUI();
     }
 
     /// <summary>
@@ -108,12 +118,15 @@ public class EnemyHealth : MonoBehaviour, IDamageble
     /// <summary>
     /// 回復
     /// </summary>
-    public void Healing(float healPerSecond)
+    public float Healing(float amount)
     {
-        if (GameManager.instance.isGameEnd) return;
+        if (GameManager.instance.isGameEnd || amount <= 0f) return 0f;
 
-        health += healPerSecond * Time.deltaTime;
+        // 上限適用後の実回復量を返し、呼び出し側の回復予算と実HPの増分を一致させる。
+        float previousHealth = health;
+        health += amount;
         health = Mathf.Clamp(health, 0, E_Profile.Status.Health);
         healthSlider.RefreshSetHealthUI(health, E_Profile.Status.Health);
+        return health - previousHealth;
     }
 }

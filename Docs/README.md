@@ -14,10 +14,11 @@ This folder collects the project overview, gameplay rules, architecture summary,
 - Engine: Unity 6000.0.51f1 (from ProjectSettings/ProjectVersion.txt)
 - Major scenes: TitleScene and BattleScene
 - Core gameplay systems: title flow, difficulty selection, battle state machine, timing-based attack QTE, enemy AI, health and counter/break logic
-- Verified build status: `dotnet build Assembly-CSharp.csproj --no-restore` succeeded with 0 errors and 1 warning
-- Unverified in Unity Editor: actual runtime playthrough, scene behavior, and polished release quality
+- Verified build status: `dotnet build FingerDojo.sln --no-restore` succeeded with 0 errors and one existing unused-field warning
+- Five difficulty profiles have been added to the code/assets and compile; skill and taunt proposals are not currently implemented
+- Unverified in Unity Editor: actual runtime playthrough, scene behavior, animation-event timing, and gameplay balance
 
 ## Current state
-The project is a prototype or early game loop built around a turn-based timing battle. The title screen selects a difficulty profile, then the battle scene loads an enemy profile and begins a fight where the player can attack, counter, break the enemy, or refresh.
+The project is a prototype or early game loop built around a timing battle. The title screen selects one of five difficulty profiles, then the battle scene loads a single enemy. The active combat loop includes attack, counter, break, and refresh. Skill and taunt commands remain unimplemented.
 
-The gameplay specification records observed implementation. The skills, taunt, and five-difficulty document is a proposal for unimplemented gameplay; its values are initial playtest targets, not validated balance or approved product decisions.
+The gameplay specification records implemented behavior and validation limits. The skills, taunt, and five-difficulty document contains the prior unapproved skill/taunt proposal plus the difficulty implementation status; do not treat the old skill/taunt proposal as an approved implementation target. Difficulty values are initial tuning targets, not playtested balance.

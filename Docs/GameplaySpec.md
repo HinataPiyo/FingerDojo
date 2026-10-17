@@ -3,7 +3,7 @@
 ## Scope
 This document captures the game rules and flow that are explicitly visible in the implemented code and scene data. It is intentionally limited to what the repository currently proves.
 
-Proposed rules for unimplemented skills, taunt, and five difficulty tiers are documented separately in [CombatSkillsAndDifficultySpec.md](./CombatSkillsAndDifficultySpec.md). Those proposals do not describe current runtime behavior.
+The proposed skill and taunt designs are documented in [CombatSkillsAndDifficultySpec.md](./CombatSkillsAndDifficultySpec.md), but their gameplay implementations have been removed pending a revised design. Five difficulty tiers remain implemented; Unity Play Mode validation is still outstanding.
 
 ## Title flow
 ### Home screen
@@ -32,7 +32,7 @@ The battle uses the `BattleState` enum to represent game states:
 - `BattleClear`
 - `GameOver`
 
-These enum values are not all active gameplay states: the state controllers implement only a subset of transitions. `GameManager.isGameEnd` is the actual battle-wide terminal gate; `BattleClear` and `GameOver` are not currently assigned as controller states.
+These enum values are not all active gameplay states. `Skill` and `Goad` remain declared placeholders without player command implementations. `GameManager.isGameEnd` is the battle-wide terminal gate; `BattleClear` and `GameOver` are not currently assigned as controller states.
 
 ### Completion dependencies
 | Step | Preconditions and input | Processing and state owner | Completion / failure behavior | Downstream dependency |
@@ -51,12 +51,15 @@ The player can trigger actions through command components attached to the player
 - `Counter` attempts a counter state
 - `Refresh` heals over time
 - `Break` is triggered after repeated valid counter pressure in some logic paths
+- `Skill` and `Goad` are declared states only; there are no active player commands for them.
 
 ### Enemy actions
 The enemy is controlled by `EnemyDecisionController`, which waits for idle times and then chooses a weighted action based on `EnemyProfileSO` values:
 - attack weight
 - refresh weight
-- others are defined in the profile but currently commented out in the decision logic
+- Hard and above only allow Refresh at or below half health and when missing health is at least the configured refresh amount
+- Master and Transcendent track three repeated attack commands and prepare a counter for the next attack command
+- Transcendent can select a two-stage attack below half health when the repeated-attack condition is active
 
 The actual execution is handled by the enemy command classes (`Attack`, `Refresh`, `Counter`, `CounterSuccess`, `Break`).
 
@@ -71,6 +74,13 @@ The actual execution is handled by the enemy command classes (`Attack`, `Refresh
 - Counter actions trigger `PlayerToEnemyCounter()` or `EnemyToPlayerCounter()` when the state is correct
 - `TakeDamage()` calls break/counter checks before applying damage
 - `Hit()` cancels refresh if present and changes the state to `Hit` when the character is idle
+- Enemy attack rolls are sampled when the telegraph starts and shown as Weak/Medium/Strong; combo stages display their stage number
+- Enemy attack animation-event damage is guarded against duplicate resolution
+
+## Difficulty and feature status
+Five `DifficultyId` profiles are assigned to the TitleScene buttons. Profiles vary enemy stats, idle time, reactive counter delay/chance, break requirements, refresh conditions, and attack telegraph duration. The proposed technique and taunt rules are not currently implemented.
+
+The design values are initial tuning values, not playtested balance. Unity Editor runtime, exact scene references, modal readability, and Animator event timing remain unverified. See [CombatSkillsAndDifficultySpec.md](./CombatSkillsAndDifficultySpec.md) for the complete parameter table and the confirmed Hard-tier counter rule.
 
 ## Win/Lose conditions
 - If the player health reaches zero, `PlayerHealth.Die()` calls `GameManager.GameOver()`
@@ -88,5 +98,6 @@ The actual execution is handled by the enemy command classes (`Attack`, `Refresh
 - Whether the game is intended to be single-stage or multi-stage
 - Whether the battle loop and UI progression are final versus prototype-only
 - Whether a first-result-wins policy is the desired product rule for genuinely simultaneous defeat conditions; Unity's current synchronous call order makes it the minimal deterministic policy
-- The TitleScene has difficulty button instances, but only one enemy-profile asset was found and the complete five-tier mapping is unverified.
-- `Skill` and `Goad` are enum values rather than working player commands in the current implementation.
+- The five title-button profile references and selector UI have not been validated in Unity Editor runtime.
+- In Hard, an attack-type player command during the enemy's attack telegraph may trigger the profile's reactive Counter chance. On success, the enemy attack is canceled and the existing Counter attempt delay is used. This behavior is compile-verified but still requires Unity Play Mode validation; see [CombatSkillsAndDifficultySpec.md](./CombatSkillsAndDifficultySpec.md).
+- The exact animation/event timing, second-stage combo behavior, and result handling still require Play Mode validation.

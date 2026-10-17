@@ -43,6 +43,8 @@ namespace Command
         /// </summary>
         public void Execute()
         {
+            // Refreshを選ぶと攻撃連打が途切れるため、敵側の履歴をリセットする。
+            GameManager.instance.EnemyHealth.DecisionController.RegisterPlayerCommand(5, false);
             if (cor_Refresh != null)
             {
                 StopCoroutine(cor_Refresh);

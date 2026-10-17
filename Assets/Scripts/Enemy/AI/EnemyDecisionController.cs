@@ -24,6 +24,10 @@ public class EnemyDecisionController : MonoBehaviour
     WaitUntil notBreak;
     WaitWhile isRefresh;
     WaitUntil isIdle;
+    // 同一攻撃コマンドの連続回数。非攻撃コマンドでリセットする。
+    int lastAttackCommand = -1;
+    int repeatedAttackCount;
+    bool repeatedCounterReady;
 
 
     void Awake()
@@ -93,21 +97,23 @@ public class EnemyDecisionController : MonoBehaviour
         weights.Add(EnemyHealth.E_Profile.AttackWeight);
 
         // 回復（HPが満タンでなければ選択肢に入れる）
-        if (EnemyHealth.GetCurrentHealth < EnemyHealth.E_Profile.Status.Health)
+        bool canRefresh = EnemyHealth.GetCurrentHealth < EnemyHealth.E_Profile.Status.Health;
+        if (canRefresh && EnemyHealth.E_Profile.RefreshOnlyAtHalfHealth)
+        {
+            // 高難易度ではHPが半分以下かつ、一回分の回復量を活かせる欠損がある時だけ回復候補にする。
+            canRefresh = EnemyHealth.GetCurrentHealth <= EnemyHealth.E_Profile.Status.Health * 0.5f
+                && EnemyHealth.E_Profile.Status.Health - EnemyHealth.GetCurrentHealth
+                >= EnemyHealth.E_Profile.Status.RefreshAmount;
+        }
+
+        if (canRefresh)
         {
             availableActions.Add(BattleState.Refresh);
             weights.Add(EnemyHealth.E_Profile.RefreshWeight);
         }
 
-        // カウンターはPlayerが攻撃時、随時判定
-
-        // 挑発（常に可能とする）
-        // availableActions.Add(BattleState.Goad);
-        // weights.Add(enemyProfile.GoadWeight);
-
-        // スキル（常に可能とする）
-        // availableActions.Add(BattleState.Skill);
-        // weights.Add(enemyProfile.SkillWeight);
+        // Counterは重み付き行動には含めず、プレイヤー攻撃入力時にCounter側で判定する。
+        // 現在の敵AIが重み付きで選ぶ行動はAttackとRefreshのみ。
 
         // --- 重み付けランダム選択 ---
         if (availableActions.Count > 0)
@@ -119,6 +125,11 @@ public class EnemyDecisionController : MonoBehaviour
             }
 
             BattleState state = GetWeightedRandomAction(availableActions, weights);
+            if (state == BattleState.Attack)
+            {
+                // 攻撃を選んだ時点で一度だけ連携抽選し、攻撃処理へ結果を渡す。
+                cmd_attack.ConfigureCombo(ShouldUseComboAttack());
+            }
 
             e_StateCtrl.StateChange(state, GetEnemyAction(state));
         }
@@ -173,4 +184,60 @@ public class EnemyDecisionController : MonoBehaviour
             || GameManager.instance.PlayerHealth.P_State == BattleState.Goad
             || GameManager.instance.PlayerHealth.P_State == BattleState.Break;
     }
+
+    bool ShouldUseComboAttack()
+    {
+        EnemyProfileSO profile = EnemyHealth.E_Profile;
+        // 超越者の二段攻撃はHP半分以下・同じ攻撃3回以上・プロフィール抽選の全条件が必要。
+        return profile.ComboAttackEnabled
+            && EnemyHealth.GetCurrentHealth <= profile.Status.Health * 0.5f
+            && repeatedAttackCount >= 3
+            && Random.value < profile.ComboAttackChance;
+    }
+
+    public void RegisterPlayerCommand(int commandId, bool isAttack)
+    {
+        if (!EnemyHealth.E_Profile.RepeatedCommandCounter) return;
+
+        if (!isAttack)
+        {
+            // 行動を変えれば同じ攻撃の連打ではなくなるため、読み状態を解除する。
+            lastAttackCommand = -1;
+            repeatedAttackCount = 0;
+            repeatedCounterReady = false;
+            GameUIManager.instance.SetRepeatedAttackWarning(false);
+            return;
+        }
+
+        if (lastAttackCommand == commandId)
+        {
+            repeatedAttackCount++;
+        }
+        else
+        {
+            lastAttackCommand = commandId;
+            repeatedAttackCount = 1;
+        }
+
+        if (repeatedAttackCount == 3 && !repeatedCounterReady)
+        {
+            // 3回目の連続入力で予告を一度だけ出す。以降の強制Counter消費で履歴を初期化する。
+            repeatedCounterReady = true;
+            GameUIManager.instance.SetRepeatedAttackWarning(true);
+        }
+    }
+
+    public bool ConsumeRepeatedCommandCounter()
+    {
+        if (!repeatedCounterReady) return false;
+
+        // Counterを消費したら、次の連打判定を新しい履歴から始める。
+        repeatedCounterReady = false;
+        repeatedAttackCount = 0;
+        lastAttackCommand = -1;
+        GameUIManager.instance.SetRepeatedAttackWarning(false);
+        return true;
+    }
+
+    public bool IsRepeatedCounterReady => repeatedCounterReady;
 }

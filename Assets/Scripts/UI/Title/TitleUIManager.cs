@@ -17,6 +17,7 @@ public class TitleUIManager : MonoBehaviour
     {
         if (instance != null && instance != this)
         {
+            // Scene再読込時は生存中のManagerへ新SceneのCanvas参照を引き継いで複製を破棄する。
             instance.homeCnavas = homeCnavas;
             instance.difficultyCanvas = difficultyCanvas;
             instance.Initialize();
@@ -62,6 +63,20 @@ public class TitleUIManager : MonoBehaviour
     /// <param name="select">難易度</param>
     public void SetDifficultyMode(EenmyDifficultyListSO.Data select)
     {
+        // 有効なEnemyProfileがなければ、未設定データのままBattleSceneへ進ませない。
+        if (select == null || select.profileSO == null)
+        {
+            Debug.LogError("Cannot start a battle without a selected enemy difficulty profile.", this);
+            return;
+        }
+
+        // Scene上のボタン割当とプロフィールの難易度IDの食い違いを遷移前に検出する。
+        if (select.profileSO.DifficultyId != select.difficultyId)
+        {
+            Debug.LogError("The selected difficulty does not match its enemy profile.", this);
+            return;
+        }
+
         SelectEnemyData = select;        // 難易度を設定
         SceneManager.LoadScene(1);  // GameSceneに遷移
     }

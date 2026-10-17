@@ -28,8 +28,9 @@ The game appears to follow this flow:
 3. Load BattleScene with an enemy profile chosen for that difficulty
 4. Battle starts with the player and enemy in a state machine
 5. Player commands include attack, counter, break, and refresh
-6. Enemy AI chooses actions based on its profile and weights
-7. Health reaches zero for either side to trigger win/lose result
+6. Enemy AI chooses actions based on its difficulty profile and weights
+7. Skill and taunt commands remain unimplemented design proposals
+8. Health reaches zero for either side to trigger win/lose result
 
 ## Current implementation status
 ### Implemented
@@ -39,6 +40,7 @@ The game appears to follow this flow:
 - Player and enemy state controllers for Idle, Attack, Counter, Hit, Refresh, Break, Win/Lose states
 - Timing QTE bar for attack timing
 - Enemy AI weighted action selection
+- Five difficulty profiles with profile-driven timings, counter behavior, refresh conditions, and higher-tier gimmicks
 - Damage visualization and effect instantiation
 - Win/lose panels
 - First-result-wins battle termination that blocks further input, damage, healing and action state transitions after a result
@@ -46,8 +48,10 @@ The game appears to follow this flow:
 ### Not fully confirmed in runtime
 - Whether the full loop is actually balanced and playable end-to-end
 - Whether all Inspector references are assigned correctly in the Unity scene
+- Whether telegraph/warning messages are readable in all resolutions
+- Whether combo animation events and telegraph interruption work correctly in Play Mode
 - Whether any state transitions are broken during real runtime play
-- Whether the UI or game rules are final, since the project has no completed design spec
+- Whether the current skill and taunt proposals match the intended game design; the previous proposal is unapproved and those commands are not implemented
 - Whether returning from battle and starting a second battle works in Play Mode (a stale title-canvas reference was fixed by inspection, pending runtime verification)
 - Whether Unity's External Script Editor is configured to use VS Code
 - Whether the first-result-wins rule and terminal guards behave correctly with active animation events and refresh coroutines in Play Mode
@@ -55,4 +59,4 @@ The game appears to follow this flow:
 ## Important notes
 - The project is currently best described as a playable prototype/early build, not a fully reviewed release candidate.
 - The build has been verified to compile successfully in the workspace, but Unity Editor runtime verification is still pending.
-- The repository contains no major product requirements document beyond this documentation folder, so the statements here are based on code and scene inspection rather than a formal design artifact.
+- The repository's gameplay design baseline is [CombatSkillsAndDifficultySpec.md](./CombatSkillsAndDifficultySpec.md); several numeric values remain initial tuning values pending playtests.
