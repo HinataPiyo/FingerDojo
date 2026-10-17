@@ -6,6 +6,13 @@
 - Main package stack: URP, UGUI, Input System, Cinemachine, Recorder, Timeline
 - Primary build settings: TitleScene and BattleScene are registered in the project build settings
 
+## Development environment check
+- The current workspace is the project root at `D:\Unity\FingerDojo`; `.vscode/settings.json` selects `FingerDojo.sln`.
+- Unity Editor 6000.0.51f1 is installed and a process was observed with this project open in TitleScene.
+- The `visualstudiotoolsforunity.vstuc` VS Code extension is installed and is recommended by `.vscode/extensions.json`.
+- No project-tracked External Script Editor preference was found. The checked per-user Unity External Tools registry preference was also absent, so the selected external editor remains unconfirmed.
+- No Unity Editor MCP or desktop UI automation tool was available for this session. Unity scene editing and Play Mode interaction could not be performed automatically.
+
 ## Verified facts from the repository
 The project currently contains:
 - a title scene with home canvas and difficulty selection canvas
@@ -40,6 +47,8 @@ The game appears to follow this flow:
 - Whether all Inspector references are assigned correctly in the Unity scene
 - Whether any state transitions are broken during real runtime play
 - Whether the UI or game rules are final, since the project has no completed design spec
+- Whether returning from battle and starting a second battle works in Play Mode (a stale title-canvas reference was fixed by inspection, pending runtime verification)
+- Whether Unity's External Script Editor is configured to use VS Code
 
 ## Important notes
 - The project is currently best described as a playable prototype/early build, not a fully reviewed release candidate.

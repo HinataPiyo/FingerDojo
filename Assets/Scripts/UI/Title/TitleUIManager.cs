@@ -15,18 +15,18 @@ public class TitleUIManager : MonoBehaviour
 
     void Awake()
     {
-        Initialize();
-        if (instance == null)
+        if (instance != null && instance != this)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
+            instance.homeCnavas = homeCnavas;
+            instance.difficultyCanvas = difficultyCanvas;
+            instance.Initialize();
             Destroy(gameObject);
             return;
         }
 
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+        Initialize();
     }
 
     /// <summary>
