@@ -1,103 +1,30 @@
-# Gameplay Specification
+# ゲームプレイ仕様（現状記録）
 
-## Scope
-This document captures the game rules and flow that are explicitly visible in the implemented code and scene data. It is intentionally limited to what the repository currently proves.
+## 文書の位置づけ
 
-The proposed skill and taunt designs are documented in [CombatSkillsAndDifficultySpec.md](./CombatSkillsAndDifficultySpec.md), but their gameplay implementations have been removed pending a revised design. Five difficulty tiers remain implemented; Unity Play Mode validation is still outstanding.
+ここでは現在のコード・アセットから読み取れるゲーム進行を要約します。正式な将来仕様や未承認案ではありません。各処理の条件・数値と根拠は[現状総合仕様書](./CurrentProjectSpecification.md)、動作確認の有無は[機能・実装状況一覧](./ImplementationStatus.md)を参照してください。
 
-## Title flow
-### Home screen
-The title scene contains a home canvas and a difficulty canvas.
+## 現在確認できる進行
 
-### Difficulty selection
-`TitleUIManager` handles screen transitions between the home view and difficulty selection view. `DifficultyButton` binds the difficulty selection to `SetDifficultyMode()`.
+1. TitleSceneでホーム画面から難易度選択を開く。
+2. DifficultyButtonがProfileと難易度IDを検査し、BattleSceneをロードする。
+3. GameManagerが選択Profileで敵を初期化し、Player／Enemyが各自のHPと戦闘状態を持つ。
+4. Playerは指撃QTE、Counter、Refreshを入力する。Breakは条件成立時の状態。
+5. 敵AIはIdle待機後にAttackまたは条件付きRefreshを選択し、Attackは予兆・ダメージ処理を行う。
+6. どちらかのHPが0以下になると最初の終局要求を保持し、勝敗パネルを表示する。
 
-### Difficulty data
-Difficulty selection uses `EenmyDifficultyListSO.Data` entries to select an `EnemyProfileSO` instance. The selected difficulty is stored in `TitleUIManager.SelectEnemyData` and loaded into the battle scene.
+## 確認されたコマンドと境界
 
-## Battle flow
-### Battle state model
-The battle uses the `BattleState` enum to represent game states:
-- `BattleIntro`
-- `Idle`
-- `Attack`
-- `Counter`
-- `Counter_Success`
-- `Hit`
-- `Refresh`
-- `Refresh_End`
-- `Break`
-- `Skill`
-- `Goad`
-- `BattleClear`
-- `GameOver`
+- **指撃：** バー位置に基づき`0.5 + 2x`倍率でダメージ。
+- **Counter：** 状態時間内に被弾すると反撃に置き換え、受けたダメージを無効化。
+- **Refresh：** 時間経過で回復し、被弾で中断。
+- **Break：** Counter状態に関係する被弾／攻撃回数の条件で発生する状態。
+- **Skill／Goad：** 現行コマンド処理なし。過去の仕様案は未承認。
 
-These enum values are not all active gameplay states. `Skill` and `Goad` remain declared placeholders without player command implementations. `GameManager.isGameEnd` is the battle-wide terminal gate; `BattleClear` and `GameOver` are not currently assigned as controller states.
+## 難易度
 
-### Completion dependencies
-| Step | Preconditions and input | Processing and state owner | Completion / failure behavior | Downstream dependency |
-|---|---|---|---|---|
-| Start battle | BattleScene loaded; `GameManager`, both health components, UI and data assets wired | `GameManager.Awake()` initializes enemy data; `PlayerHealth.Awake()` initializes player health | Missing serialized references can fail scene startup; Editor runtime validation is pending | Player input and enemy AI require initialized health/profile |
-| Accept player action | Player is in `Idle`; command buttons enabled | Button command requests a `PlayerStateController` transition and executes its `ICommand` | State controller refuses transitions after the battle ends | Action animation, QTE or refresh coroutine |
-| Resolve an attack | Action is active; attack timing or enemy animation event supplies power | `CombatCalculator` forwards computed damage to the target `Health` component | Counter may intercept damage; after terminal result, further damage is ignored | Health update or win/lose determination |
-| End battle | Player or enemy health reaches zero | Corresponding health component calls `GameManager.GameOver()` or `GameClear()` | First terminal result wins; command buttons are disabled; later damage, healing and state transitions are ignored | Result panel remains authoritative |
-| Return/retry | Result panel's back-to-home action loads TitleScene | Scene load recreates title UI while persistent title manager adopts the new scene's canvas references | Selection and second-battle flow require Play Mode confirmation | A new BattleScene must initialize fresh battle state |
+5つのProfile資産があり、敵HP・Strength・待機・予兆・Counter・Refresh条件・上位難易度の追加ルールを設定する。5段階の実プレイバランスが成立していることは確認されていない。
 
-This is the flow represented by the current implementation. It does not define or claim multi-wave progression.
+## 未確認
 
-### Player actions
-The player can trigger actions through command components attached to the player hand object:
-- `Attack` executes a timing-based attack and reveals the QTE bar
-- `Counter` attempts a counter state
-- `Refresh` heals over time
-- `Break` is triggered after repeated valid counter pressure in some logic paths
-- `Skill` and `Goad` are declared states only; there are no active player commands for them.
-
-### Enemy actions
-The enemy is controlled by `EnemyDecisionController`, which waits for idle times and then chooses a weighted action based on `EnemyProfileSO` values:
-- attack weight
-- refresh weight
-- Hard and above only allow Refresh at or below half health and when missing health is at least the configured refresh amount
-- Master and Transcendent track three repeated attack commands and prepare a counter for the next attack command
-- Transcendent can select a two-stage attack below half health when the repeated-attack condition is active
-
-The actual execution is handled by the enemy command classes (`Attack`, `Refresh`, `Counter`, `CounterSuccess`, `Break`).
-
-## Timing attack behavior
-`TimingBarController` animates a bar moving from left to right and back, and `CheckTiming()` returns a numeric value based on the current bar position.
-
-`CommandTimingQTE` uses the current timing result to apply damage and then finishes the action flow. Player attack damage is computed through `CombatCalculator` and the resulting hit power is passed to `PlayerToEnemyAttack()`.
-
-## Combat rules
-- Player damage is influenced by player strength and attack power modifiers
-- Enemy damage is influenced by enemy profile strength and attack power modifiers
-- Counter actions trigger `PlayerToEnemyCounter()` or `EnemyToPlayerCounter()` when the state is correct
-- `TakeDamage()` calls break/counter checks before applying damage
-- `Hit()` cancels refresh if present and changes the state to `Hit` when the character is idle
-- Enemy attack rolls are sampled when the telegraph starts and shown as Weak/Medium/Strong; combo stages display their stage number
-- Enemy attack animation-event damage is guarded against duplicate resolution
-
-## Difficulty and feature status
-Five `DifficultyId` profiles are assigned to the TitleScene buttons. Profiles vary enemy stats, idle time, reactive counter delay/chance, break requirements, refresh conditions, and attack telegraph duration. The proposed technique and taunt rules are not currently implemented.
-
-The design values are initial tuning values, not playtested balance. Unity Editor runtime, exact scene references, modal readability, and Animator event timing remain unverified. See [CombatSkillsAndDifficultySpec.md](./CombatSkillsAndDifficultySpec.md) for the complete parameter table and the confirmed Hard-tier counter rule.
-
-## Win/Lose conditions
-- If the player health reaches zero, `PlayerHealth.Die()` calls `GameManager.GameOver()`
-- If the enemy health reaches zero, `EnemyHealth.Die()` calls `GameManager.GameClear()`
-- `GameUIManager` toggles the win/lose canvas and shows the corresponding panel
-- The first terminal result is now authoritative. Later damage, healing and state transitions are ignored, and command buttons are disabled.
-
-## Hard facts versus assumptions
-### Verified facts
-- The code implements state transitions, enemy AI weighting, and timing-based attacks
-- The project contains a win/lose UI implementation and a battle finish flow
-
-### Likely but not yet confirmed
-- Whether the pacing and balance feel good during actual playtests
-- Whether the game is intended to be single-stage or multi-stage
-- Whether the battle loop and UI progression are final versus prototype-only
-- Whether a first-result-wins policy is the desired product rule for genuinely simultaneous defeat conditions; Unity's current synchronous call order makes it the minimal deterministic policy
-- The five title-button profile references and selector UI have not been validated in Unity Editor runtime.
-- In Hard, an attack-type player command during the enemy's attack telegraph may trigger the profile's reactive Counter chance. On success, the enemy attack is canceled and the existing Counter attempt delay is used. This behavior is compile-verified but still requires Unity Play Mode validation; see [CombatSkillsAndDifficultySpec.md](./CombatSkillsAndDifficultySpec.md).
-- The exact animation/event timing, second-stage combo behavior, and result handling still require Play Mode validation.
+Unity Editor上でのScene参照、操作入力、AnimationEvent、各難易度のプレイ、敗北・勝利・再戦の一連動作は未確認です。Wave進行、保存データ、複数敵は現行実装で確認できません。

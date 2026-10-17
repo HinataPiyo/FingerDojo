@@ -1,72 +1,34 @@
-# Release Checklist
+# リリース前確認項目
 
-## Verified baseline
-- [x] Repository structure inspected
-- [x] Unity version confirmed
-- [x] Main scenes identified
-- [x] Core game systems inspected
-- [x] C# project compiles successfully (`dotnet build` completed with 0 errors)
-- [x] One warning remains: unused field in `EnemyStateController` (`stateEnter`)
-- [x] Static review found and fixed the title-manager canvas reference becoming stale after returning from battle
-- [x] Camera shake requests now share a single active coroutine to prevent overlapping shakes from resetting each other
-- [x] Battle result is now first-result-wins; terminal state blocks subsequent input, damage, healing and state transitions
-- [ ] Unity Editor runtime playthrough is complete
-- [ ] Confirm Unity External Script Editor points to VS Code
-- [ ] Final gameplay goals and release scope are documented
-- [ ] Manual QA pass is complete
-- [ ] Versioning and packaging metadata are confirmed for the target platform
+## 現在の確認状況
 
-## Required playtest checks
-- [ ] Title scene loads and difficulty selection is usable
-- [ ] Difficulty selection loads the battle scene with the intended profile
-- [ ] Player attack flow runs without missing references
-- [ ] Counter flow succeeds/fails as intended
-- [ ] Break logic works and resets correctly
-- [ ] Refresh action restores health without breaking state
-- [ ] Enemy AI chooses valid actions and does not get stuck in Idle
-- [ ] Each of the five title difficulty buttons selects the matching profile
-- [ ] Revised technique and taunt designs are confirmed, implemented, and play-tested
-- [ ] Master/Transcendent repeated-command counter warning is visible and non-attack input clears it
-- [ ] Transcendent two-stage attack displays both stages, permits defense between stages, and stops after terminal results
-- [ ] In Hard, an attack-type command during an active enemy attack telegraph uses the reactive Counter chance; on success, the attack is canceled and the existing Counter delay is honored
-- [ ] HP bars and damage UI update correctly
-- [ ] Win/lose panel triggers correctly for both sides
-- [ ] After win/lose, delayed enemy animation events and ongoing refresh actions do not change HP or replace the result
-- [ ] Back-to-title flow works after battle
-- [ ] After returning to title, open and close difficulty selection, then start another battle
+この一覧は未完了の手動確認項目を整理したものです。Unity Editorの実行確認、ビルド、Console検査をこの調査作業では実施していません。既存資料に記録された過去のビルド結果は、現在の検証記録ではありません。
 
-## Risk review
-- [ ] Ensure no serialized object references are missing in Unity scenes
-- [ ] Confirm the battle state machine does not allow impossible transitions
-- [ ] Check if the QTE and timing pressure are sufficiently readable to players
-- [ ] Validate that all scripts attach correctly to the intended GameObjects in scene files
+## Unity Editorで必要な手動確認
 
-## Completion gate before release
-This project should only be considered release-ready after:
-1. Manual playthrough validation in Unity Editor
-2. No critical or high-severity runtime issues remain
-3. Final requirements for game content and scope are agreed
-4. Release checklist items above are marked complete
+- [ ] TitleSceneがエラーなく開き、ホーム画面から難易度選択を開閉できる
+- [ ] 5つの難易度ボタンがそれぞれ対応するDifficultyIdとEnemyProfileを選択する
+- [ ] 選択されたProfileがBattleSceneのEnemyHealthへ適用され、HPとUIが初期化される
+- [ ] Playerの指撃ボタン、QTE入力、ダメージ、判定表示を確認する
+- [ ] Player Counterの成功・失敗、持続時間、反撃ダメージを確認する
+- [ ] Player Refreshの合計回復量、被弾中断、最大HP上限を確認する
+- [ ] Player／Enemy Breakの条件、回数表示、終了後リセットを確認する
+- [ ] 敵の予兆から攻撃・被ダメージまでのタイミングを確認する
+- [ ] Hardの攻撃予兆中Counter中断／遅延挙動を確認する
+- [ ] Master／Transcendentの連続攻撃警告とCounterを確認する
+- [ ] Transcendentの二段攻撃で段数表示、防御機会、攻撃停止を確認する
+- [ ] Enemy Refreshの中断と回復予算の再利用を確認する
+- [ ] 勝利・敗北の両方で結果UI、ボタン無効化、終局後のダメージ停止を確認する
+- [ ] TitleSceneへ戻り、難易度画面を再度開いて二戦目を開始できる
+- [ ] Consoleの例外、Missing参照、Animator警告、AnimationEventエラーを確認する
+- [ ] 必要な解像度、Safe Area、操作デバイスでUIと予兆の可読性を確認する
 
-## Notes
-The repository is currently a prototype-level build with successful compile verification but unverified gameplay release quality. The checklist is therefore a forward validation plan rather than a claim of complete release readiness.
+## 仕様上の未決定事項
 
-## Required Unity Editor checks
-The Unity Editor is available and currently opens this project, but no Unity Editor control MCP or desktop interaction tool is available in this environment. Run the following manual checks in Unity:
+- ユーザーが想定する技／煽りの具体仕様。旧案は未承認のため、実装・リリース条件に含めない。
+- リリース対象プラットフォーム、ゲームの完成範囲、リリース版のメタデータ。
+- 現在の難易度Profile値が意図する難易度曲線と、各難易度の合格条件。
 
-1. Open `Assets/Scenes/TitleScene/TitleScene.unity` and enter Play Mode.
-2. Open difficulty selection and select a difficulty; confirm `Assets/Scenes/BattleScene/BattleScene.unity` loads and the enemy uses the selected `EnemyProfileSO`.
-3. Use the battle back-to-home button to load scene index 0.
-4. Open and close the difficulty panel. Confirm there is no `MissingReferenceException` and both canvases switch correctly.
-5. Start a second battle and confirm the selected profile is still initialized.
-6. Exercise player attack/QTE, player counter, refresh, enemy attacks, both result panels, and return-to-home.
+## 現況資料
 
-The title manager now refreshes its canvas references from the newly loaded TitleScene when Unity creates a duplicate manager. This fix is compile-verified but has not yet been runtime-verified in Play Mode.
-
-## Refactoring record
-### Camera shake coroutine ownership
-- **Problem:** Every `Shake()` call started an independent coroutine. If another hit occurred before the previous shake ended, the older coroutine could set the Cinemachine noise gains to zero while the newer shake was still active.
-- **Change:** Cache the required Cinemachine noise component in `Awake`, keep the active coroutine handle, and stop the previous shake routine before starting the latest request.
-- **Behavior impact:** A single shake retains its requested duration and gains. For overlapping requests, the latest request now controls one continuous shake rather than being prematurely cleared by an older routine.
-- **Performance:** No Profiler measurement was available. This is a reliability fix, not a claimed performance improvement.
-- **Verification:** C# build and diff checks; Unity Play Mode overlap behavior remains unverified.
+実装・未実装の一覧は[機能・実装状況一覧](./ImplementationStatus.md)、未検証要素の背景は[仕様差分・課題一覧](./SpecificationDiscrepancies.md)を参照してください。
