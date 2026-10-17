@@ -17,7 +17,7 @@
 The project currently contains:
 - a title scene with home canvas and difficulty selection canvas
 - a battle scene with player and enemy hands, command UI, timing bar, health UI, and win/lose panels
-- a round-based battle flow driven by `BattleState`
+- a player/enemy battle action flow driven by `BattleState`
 - enemy difficulty data stored as ScriptableObject assets
 - commands and enemy AI logic implemented as MonoBehaviours attached to the player/enemy GameObjects
 
@@ -41,6 +41,7 @@ The game appears to follow this flow:
 - Enemy AI weighted action selection
 - Damage visualization and effect instantiation
 - Win/lose panels
+- First-result-wins battle termination that blocks further input, damage, healing and action state transitions after a result
 
 ### Not fully confirmed in runtime
 - Whether the full loop is actually balanced and playable end-to-end
@@ -49,6 +50,7 @@ The game appears to follow this flow:
 - Whether the UI or game rules are final, since the project has no completed design spec
 - Whether returning from battle and starting a second battle works in Play Mode (a stale title-canvas reference was fixed by inspection, pending runtime verification)
 - Whether Unity's External Script Editor is configured to use VS Code
+- Whether the first-result-wins rule and terminal guards behave correctly with active animation events and refresh coroutines in Play Mode
 
 ## Important notes
 - The project is currently best described as a playable prototype/early build, not a fully reviewed release candidate.

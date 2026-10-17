@@ -9,6 +9,7 @@
 - [x] One warning remains: unused field in `EnemyStateController` (`stateEnter`)
 - [x] Static review found and fixed the title-manager canvas reference becoming stale after returning from battle
 - [x] Camera shake requests now share a single active coroutine to prevent overlapping shakes from resetting each other
+- [x] Battle result is now first-result-wins; terminal state blocks subsequent input, damage, healing and state transitions
 - [ ] Unity Editor runtime playthrough is complete
 - [ ] Confirm Unity External Script Editor points to VS Code
 - [ ] Final gameplay goals and release scope are documented
@@ -25,6 +26,7 @@
 - [ ] Enemy AI chooses valid actions and does not get stuck in Idle
 - [ ] HP bars and damage UI update correctly
 - [ ] Win/lose panel triggers correctly for both sides
+- [ ] After win/lose, delayed enemy animation events and ongoing refresh actions do not change HP or replace the result
 - [ ] Back-to-title flow works after battle
 - [ ] After returning to title, open and close difficulty selection, then start another battle
 

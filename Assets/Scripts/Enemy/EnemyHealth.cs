@@ -61,6 +61,8 @@ public class EnemyHealth : MonoBehaviour, IDamageble
     /// </summary>
     public void TakeDamage(float damage)
     {
+        if (GameManager.instance.isGameEnd) return;
+
         cmd_Break.CheckBreak();             // ブレイク状態を更新する
         bool isCounter = cmd_CounterSuccess.CheckCounter();         // カウンター状態を更新する
         if (isCounter) return;              // カウンターが成功したら
@@ -108,6 +110,8 @@ public class EnemyHealth : MonoBehaviour, IDamageble
     /// </summary>
     public void Healing(float healPerSecond)
     {
+        if (GameManager.instance.isGameEnd) return;
+
         health += healPerSecond * Time.deltaTime;
         health = Mathf.Clamp(health, 0, E_Profile.Status.Health);
         healthSlider.RefreshSetHealthUI(health, E_Profile.Status.Health);

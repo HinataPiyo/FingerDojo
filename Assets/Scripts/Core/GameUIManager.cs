@@ -59,6 +59,7 @@ public class GameUIManager : MonoBehaviour
 
     public void GameClear()
     {
+        SetCMDInteractable(false);
         win_Lose_Canvas.enabled = true;
         winPanel.SetActive(true);
         losePanel.SetActive(false);
@@ -66,6 +67,7 @@ public class GameUIManager : MonoBehaviour
 
     public void GameOver()
     {
+        SetCMDInteractable(false);
         win_Lose_Canvas.enabled = true;
         winPanel.SetActive(false);
         losePanel.SetActive(true);

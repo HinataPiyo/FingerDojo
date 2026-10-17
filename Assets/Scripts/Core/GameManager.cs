@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void GameOver()
     {
+        if (isGameEnd) return;
+
         isGameEnd = true;
         GameUIManager.instance?.GameOver();
     }
@@ -71,6 +73,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void GameClear()
     {
+        if (isGameEnd) return;
+
         isGameEnd = true;
         GameUIManager.instance?.GameClear();
     }

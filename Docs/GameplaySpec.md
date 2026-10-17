@@ -30,6 +30,19 @@ The battle uses the `BattleState` enum to represent game states:
 - `BattleClear`
 - `GameOver`
 
+These enum values are not all active gameplay states: the state controllers implement only a subset of transitions. `GameManager.isGameEnd` is the actual battle-wide terminal gate; `BattleClear` and `GameOver` are not currently assigned as controller states.
+
+### Completion dependencies
+| Step | Preconditions and input | Processing and state owner | Completion / failure behavior | Downstream dependency |
+|---|---|---|---|---|
+| Start battle | BattleScene loaded; `GameManager`, both health components, UI and data assets wired | `GameManager.Awake()` initializes enemy data; `PlayerHealth.Awake()` initializes player health | Missing serialized references can fail scene startup; Editor runtime validation is pending | Player input and enemy AI require initialized health/profile |
+| Accept player action | Player is in `Idle`; command buttons enabled | Button command requests a `PlayerStateController` transition and executes its `ICommand` | State controller refuses transitions after the battle ends | Action animation, QTE or refresh coroutine |
+| Resolve an attack | Action is active; attack timing or enemy animation event supplies power | `CombatCalculator` forwards computed damage to the target `Health` component | Counter may intercept damage; after terminal result, further damage is ignored | Health update or win/lose determination |
+| End battle | Player or enemy health reaches zero | Corresponding health component calls `GameManager.GameOver()` or `GameClear()` | First terminal result wins; command buttons are disabled; later damage, healing and state transitions are ignored | Result panel remains authoritative |
+| Return/retry | Result panel's back-to-home action loads TitleScene | Scene load recreates title UI while persistent title manager adopts the new scene's canvas references | Selection and second-battle flow require Play Mode confirmation | A new BattleScene must initialize fresh battle state |
+
+This is the flow represented by the current implementation. It does not define or claim multi-wave progression.
+
 ### Player actions
 The player can trigger actions through command components attached to the player hand object:
 - `Attack` executes a timing-based attack and reveals the QTE bar
@@ -61,6 +74,7 @@ The actual execution is handled by the enemy command classes (`Attack`, `Refresh
 - If the player health reaches zero, `PlayerHealth.Die()` calls `GameManager.GameOver()`
 - If the enemy health reaches zero, `EnemyHealth.Die()` calls `GameManager.GameClear()`
 - `GameUIManager` toggles the win/lose canvas and shows the corresponding panel
+- The first terminal result is now authoritative. Later damage, healing and state transitions are ignored, and command buttons are disabled.
 
 ## Hard facts versus assumptions
 ### Verified facts
@@ -71,3 +85,4 @@ The actual execution is handled by the enemy command classes (`Attack`, `Refresh
 - Whether the pacing and balance feel good during actual playtests
 - Whether the game is intended to be single-stage or multi-stage
 - Whether the battle loop and UI progression are final versus prototype-only
+- Whether a first-result-wins policy is the desired product rule for genuinely simultaneous defeat conditions; Unity's current synchronous call order makes it the minimal deterministic policy

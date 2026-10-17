@@ -42,6 +42,8 @@ public class PlayerStateController : MonoBehaviour
     /// </summary>
     public void StateChange(BattleState nextState, ICommand _cmd)
     {
+        if (GameManager.instance.isGameEnd) return;
+
         State = nextState;
         _stateTime = 0;
         stateEnter = true;
