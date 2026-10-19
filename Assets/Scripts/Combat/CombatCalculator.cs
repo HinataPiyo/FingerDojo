@@ -6,8 +6,9 @@ using UnityEngine;
 public class CombatCalculator : MonoBehaviour
 {
     public static CombatCalculator instance { get; private set; }
-    [SerializeField] EnemyHand enemyHand;
-    [SerializeField] PlayerHand playerHand;
+    [SerializeField] EnemyHealth e_Health;
+    [SerializeField] PlayerHealth p_Health;
+
 
     void Awake()
     {
@@ -25,7 +26,7 @@ public class CombatCalculator : MonoBehaviour
     /// <param name="power"></param>
     public void PlayerToEnemyAttack(float power)
     {
-        enemyHand.TakeDamage(playerHand.P_Data.Status.Strength * power);
+        e_Health.TakeDamage(p_Health.P_Data.Status.Strength * power);
     }
 
     /// <summary>
@@ -34,7 +35,7 @@ public class CombatCalculator : MonoBehaviour
     /// <param name="power"></param>
     public void EnemyToPlayerAttack(float power)
     {
-        playerHand.TakeDamage(enemyHand.E_Profile.Status.Strength * power);
+        p_Health.TakeDamage(e_Health.E_Profile.Status.Strength * power);
     }
 
     /// <summary>
@@ -42,7 +43,7 @@ public class CombatCalculator : MonoBehaviour
     /// </summary>
     public void PlayerToEnemyCounter()
     {
-        enemyHand.TakeDamage(playerHand.P_Data.Status.Strength * 0.25f);
+        e_Health.TakeDamage(p_Health.P_Data.Status.Strength * 0.25f);
     }
 
     /// <summary>
@@ -50,6 +51,6 @@ public class CombatCalculator : MonoBehaviour
     /// </summary>
     public void EnemyToPlayerCounter()
     {
-        playerHand.TakeDamage(enemyHand.E_Profile.Status.Strength * 0.25f);
+        p_Health.TakeDamage(e_Health.E_Profile.Status.Strength * 0.25f);
     }
 }

@@ -5,13 +5,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
 
-    [SerializeField] PlayerHand playerHand;
-    [SerializeField] EnemyHand enemyHand;
+    [SerializeField] PlayerHealth playerHand;
+    [SerializeField] EnemyHealth enemyHealth;
 
     Coroutine cor_MomentTime;
 
-    public PlayerHand PlayerHand => playerHand;
-    public EnemyHand EnemyHand => enemyHand;
+    public PlayerHealth PlayerHealth => playerHand;
+    public EnemyHealth EnemyHealth => enemyHealth;
 
     public bool isGameEnd { get; private set;}
 
@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
         }
 
         // 敵データの初期化処理
-        enemyHand.Initialize(TitleUIManager.instance?.SelectEnemyData);
+        enemyHealth.Initialize(TitleUIManager.instance?.SelectEnemyData);
     }
 
     public void StartMomentTime()
@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void GameOver()
     {
+        if (isGameEnd) return;
+
         isGameEnd = true;
         GameUIManager.instance?.GameOver();
     }
@@ -71,6 +73,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void GameClear()
     {
+        if (isGameEnd) return;
+
         isGameEnd = true;
         GameUIManager.instance?.GameClear();
     }

@@ -20,6 +20,22 @@ public class DifficultyButton : MonoBehaviour
     /// </summary>
     void ButtonOnClick()
     {
+        // 未割当のボタンからScene遷移せず、設定ミスを明示する。
+        if (difficulty == null || difficulty.profileSO == null)
+        {
+            Debug.LogError($"Difficulty button '{name}' has no difficulty profile assigned.", this);
+            return;
+        }
+
+        // ボタン表示の難易度と実際に読み込む敵プロフィールの難易度を一致させる。
+        if (difficulty.profileSO.DifficultyId != difficulty.difficultyId)
+        {
+            Debug.LogError(
+                $"Difficulty button '{name}' is configured as {difficulty.difficultyId}, but its profile is {difficulty.profileSO.DifficultyId}.",
+                this);
+            return;
+        }
+
         TitleUIManager.instance.SetDifficultyMode(difficulty);
     }
 }

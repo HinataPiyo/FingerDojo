@@ -18,6 +18,13 @@ public class StatusConst
     [SerializeField] int maxBreakCount = 3;
     [SerializeField] float breakTime = 3f;
 
+    [Header("Hit設定")]
+    [SerializeField] float hit_Duration = 0.25f;
+
+    [Tooltip("カウンター状態の持続時間（秒）")]
+    [SerializeField] float counterStateDuration = 0.5f;
+
+
     public string Name => name;
     public RANK Rank => rank;
     public float Health => health;
@@ -28,8 +35,13 @@ public class StatusConst
     public float RefreshTime => refreshTime;
     public float RefreshAmount => refreshAmount;
 
+    
     public int MaxBreakCount => maxBreakCount;
     public float BreakTime => breakTime;
+
+    public float HitDuration => hit_Duration;
+
+    public float CounterStateDuration => counterStateDuration;
 
     public enum RANK
     {

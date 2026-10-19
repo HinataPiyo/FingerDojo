@@ -47,12 +47,13 @@ public class CommandTimingQTE : MonoBehaviour, IPointerDownHandler
     /// </summary>
     public void EndTimingQTE()
     {
-        gameObject.SetActive(false);
         // 攻撃判定の後にこの処理が来るので、Break中はステートを変えない
         if (playerState.State != BattleState.Break)
         {
-            playerState.StateChange(BattleState.Idle);
+            playerState.StateChange(BattleState.Idle, null);
         }
+
+        gameObject.SetActive(false);
     }
 
 }

@@ -477,9 +477,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1840709169}
     m_Modifications:
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.difficultyId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.tag
+      value: "\u666E\u901A"
+      objectReference: {fileID: 0}
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.profileSO
+      value:
+      objectReference: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
     - target: {fileID: 2564482130791553882, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
       propertyPath: m_Sprite
-      value: 
+      value:
       objectReference: {fileID: -5961248649729370924, guid: b94630af24226dc41bdaf557e05d760d, type: 3}
     - target: {fileID: 3803438825967907065, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
       propertyPath: m_Pivot.x
@@ -603,9 +615,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1840709169}
     m_Modifications:
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.difficultyId
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.tag
+      value: "\u8D85\u8D8A\u8005"
+      objectReference: {fileID: 0}
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.profileSO
+      value:
+      objectReference: {fileID: 11400000, guid: 0c2de54ffb534e5c8c64e27a8dca3409, type: 2}
     - target: {fileID: 2564482130791553882, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
       propertyPath: m_Sprite
-      value: 
+      value:
       objectReference: {fileID: -8164047677808627683, guid: b94630af24226dc41bdaf557e05d760d, type: 3}
     - target: {fileID: 3803438825967907065, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
       propertyPath: m_Pivot.x
@@ -729,6 +753,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1840709169}
     m_Modifications:
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.difficultyId
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.tag
+      value: "\u96E3\u3057\u3044"
+      objectReference: {fileID: 0}
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.profileSO
+      value:
+      objectReference: {fileID: 11400000, guid: f512c43538fa4c8e98abc12ba83bbde3, type: 2}
     - target: {fileID: 2564482130791553882, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -1453,9 +1489,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 1840709169}
     m_Modifications:
     - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.difficultyId
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.tag
+      value: "\u9054\u4EBA"
+      objectReference: {fileID: 0}
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
       propertyPath: difficulty.profileSO
       value: 
-      objectReference: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
+      objectReference: {fileID: 11400000, guid: 4343c0e297864834b09872d1a95f6515, type: 2}
     - target: {fileID: 2564482130791553882, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -2142,6 +2186,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1840709169}
     m_Modifications:
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.difficultyId
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.tag
+      value: "\u6613\u3057\u3044"
+      objectReference: {fileID: 0}
+    - target: {fileID: 213858812429839483, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
+      propertyPath: difficulty.profileSO
+      value:
+      objectReference: {fileID: 11400000, guid: 656d3c1327e04a048f87331281e0cd15, type: 2}
     - target: {fileID: 3803438825967907065, guid: 6ac5a00782d78d6408bf538b0eae99b9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

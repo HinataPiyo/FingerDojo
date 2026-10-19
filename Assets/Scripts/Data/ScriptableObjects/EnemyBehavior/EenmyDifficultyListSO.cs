@@ -1,5 +1,15 @@
 using UnityEngine;
 
+public enum DifficultyId
+{
+    // enum値は各EnemyProfileSOのDifficultyIdと一致させる。
+    Easy,
+    Normal,
+    Hard,
+    Master,
+    Transcendent
+}
+
 [CreateAssetMenu(fileName = "EenmyDifficultyListSO", menuName = "EenmyDifficultyListSO")]
 public class EenmyDifficultyListSO : ScriptableObject
 {
@@ -9,6 +19,7 @@ public class EenmyDifficultyListSO : ScriptableObject
     [System.Serializable]
     public class Data
     {
+        public DifficultyId difficultyId;
         public string tag;
         public EnemyProfileSO profileSO;
     }

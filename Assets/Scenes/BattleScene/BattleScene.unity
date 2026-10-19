@@ -131,6 +131,11 @@ GameObject:
   - component: {fileID: 130995170}
   - component: {fileID: 130995169}
   - component: {fileID: 130995171}
+  - component: {fileID: 130995176}
+  - component: {fileID: 130995175}
+  - component: {fileID: 130995174}
+  - component: {fileID: 130995173}
+  - component: {fileID: 130995172}
   m_Layer: 0
   m_Name: PlayerHand
   m_TagString: Untagged
@@ -171,14 +176,10 @@ MonoBehaviour:
   taleDamageUI: {fileID: 5282685873826585990, guid: 83f79e2e855f04b47bbb4e5590157656, type: 3}
   effect_Hit: {fileID: 5424460303727441523, guid: 10359ec5f06a67a4a83278b36024dfcf, type: 3}
   handPos: {fileID: 1316494050}
-  handPos_Top: {fileID: 2010353580}
   counterPos: {fileID: 1507879638}
-  refreshPos: {fileID: 979988461}
   playerState: {fileID: 130995171}
   playerData: {fileID: 11400000, guid: 13e56f07885d9da42ba71849517852af, type: 2}
-  handAnim: {fileID: 130995170}
   healthSlider: {fileID: 1587052829}
-  breakCount_Text: {fileID: 1921004112}
 --- !u!95 &130995170
 Animator:
   serializedVersion: 7
@@ -214,11 +215,75 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handAnim: {fileID: 130995170}
-  timingBarCtrl: {fileID: 1900360604}
+--- !u!114 &130995172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130995167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 049d11a452dd9d040958d16ecfb18310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   effect_Counter_Success: {fileID: 6058184271372599556, guid: 0a28b617900353e428ad6d7557822f4a, type: 3}
+--- !u!114 &130995173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130995167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee254db75fd0910448e81ae12d1aa944, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1732969719}
+--- !u!114 &130995174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130995167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92a5899e75039542b665a895220336e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1776936935}
   effect_Refresh: {fileID: 968606549949319688, guid: 9b119040c8ee4b04a8fd69fd4e2a933c, type: 3}
+  refreshPos: {fileID: 979988461}
+--- !u!114 &130995175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130995167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf726fd2399ba2249bd6365edac9bcf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  breakCount_Text: {fileID: 1921004112}
+--- !u!114 &130995176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130995167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5237a5a01ac05224087309f91d9e69ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1094398218}
+  timingBarCtrl: {fileID: 1900360604}
   cmd_TimingQTE: {fileID: 1802032279}
-  counterDuration: 0.5
 --- !u!1 &159760729
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,13 +796,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 254627909}
-  - component: {fileID: 254627910}
   - component: {fileID: 254627911}
+  - component: {fileID: 254627910}
   - component: {fileID: 254627913}
-  - component: {fileID: 254627912}
   - component: {fileID: 254627914}
+  - component: {fileID: 254627912}
   - component: {fileID: 254627915}
+  - component: {fileID: 254627919}
   - component: {fileID: 254627916}
+  - component: {fileID: 254627918}
   m_Layer: 0
   m_Name: EnemyHand
   m_TagString: Untagged
@@ -778,8 +845,6 @@ MonoBehaviour:
   takeDamageUI: {fileID: 5282685873826585990, guid: 83f79e2e855f04b47bbb4e5590157656, type: 3}
   effect_Hit: {fileID: 5424460303727441523, guid: 10359ec5f06a67a4a83278b36024dfcf, type: 3}
   handPos: {fileID: 1586893061}
-  counterPos: {fileID: 1607297166}
-  refreshPos: {fileID: 159760730}
   enemyProfile: {fileID: 11400000, guid: 4a444b24e535a15489b17a508eee72e7, type: 2}
   healthSlider: {fileID: 1112884971}
 --- !u!95 &254627911
@@ -829,8 +894,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handAnim: {fileID: 254627911}
-  effect_Counter_Success: {fileID: 6058184271372599556, guid: 0a28b617900353e428ad6d7557822f4a, type: 3}
-  effect_Refresh: {fileID: 968606549949319688, guid: 9b119040c8ee4b04a8fd69fd4e2a933c, type: 3}
 --- !u!114 &254627914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -867,7 +930,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94d1df0cde9836748bf6344a347f2d9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthSlider: {fileID: 1112884971}
+  breakCount_Text: {fileID: 1476112876}
+--- !u!114 &254627918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254627908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b3a89aea9360d44dab86ce8a133d0e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  refreshPos: {fileID: 159760730}
+  effect_Refresh: {fileID: 968606549949319688, guid: 9b119040c8ee4b04a8fd69fd4e2a933c, type: 3}
+--- !u!114 &254627919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254627908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda581facdf3dbd488cdb3996c1e3072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  counterPos: {fileID: 1607297166}
+  effect_Counter_Success: {fileID: 6058184271372599556, guid: 0a28b617900353e428ad6d7557822f4a, type: 3}
 --- !u!1 &281963542
 GameObject:
   m_ObjectHideFlags: 0
@@ -2208,8 +2299,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 283dd178c3fee634a87e6b5b579d01d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHand: {fileID: 254627910}
-  playerHand: {fileID: 130995169}
+  e_Health: {fileID: 254627910}
+  p_Health: {fileID: 130995169}
 --- !u!4 &704794118
 Transform:
   m_ObjectHideFlags: 0
@@ -3182,7 +3273,6 @@ GameObject:
   - component: {fileID: 1094398217}
   - component: {fileID: 1094398216}
   - component: {fileID: 1094398218}
-  - component: {fileID: 1094398219}
   m_Layer: 5
   m_Name: main_attack
   m_TagString: Untagged
@@ -3291,19 +3381,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1094398219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1094398214}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 662b203d00b6fb54da6052253b9c34bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commandToExecute: {fileID: 11400000, guid: fa7886b4857058f4b961dd5ffd9dad0a, type: 2}
 --- !u!1001 &1112884969
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4102,7 +4179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHand: {fileID: 130995169}
-  enemyHand: {fileID: 254627910}
+  enemyHealth: {fileID: 254627910}
 --- !u!1 &1366319633
 GameObject:
   m_ObjectHideFlags: 0
@@ -5029,7 +5106,6 @@ GameObject:
   - component: {fileID: 1732969718}
   - component: {fileID: 1732969717}
   - component: {fileID: 1732969719}
-  - component: {fileID: 1732969720}
   m_Layer: 5
   m_Name: counter
   m_TagString: Untagged
@@ -5138,19 +5214,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1732969720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1732969715}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 662b203d00b6fb54da6052253b9c34bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commandToExecute: {fileID: 11400000, guid: e11f20b7697fb5242afab2b36a89c40c, type: 2}
 --- !u!1 &1776936931
 GameObject:
   m_ObjectHideFlags: 0
@@ -5163,7 +5226,6 @@ GameObject:
   - component: {fileID: 1776936934}
   - component: {fileID: 1776936933}
   - component: {fileID: 1776936935}
-  - component: {fileID: 1776936936}
   m_Layer: 5
   m_Name: refresh
   m_TagString: Untagged
@@ -5272,19 +5334,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1776936936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1776936931}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 662b203d00b6fb54da6052253b9c34bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commandToExecute: {fileID: 11400000, guid: 36b9f44959a151c4ea7cc6274dbfec48, type: 2}
 --- !u!1 &1802032277
 GameObject:
   m_ObjectHideFlags: 0
